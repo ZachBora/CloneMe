@@ -7,7 +7,6 @@ Pull Requests
 -----------
 Every requests will be considered.
 
-
-
+* * *
 
 All Rights Reserved unless otherwise explicitly stated.
