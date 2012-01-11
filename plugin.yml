@@ -1,0 +1,31 @@
+name: CloneMe
+main: com.worldcretornica.cloneme.CloneMe
+version: 0.1.1
+softdepend: [PermissionsEX, NPCCreatures]
+description: >
+             Create clones to help you build
+commands:
+    cloneme:
+        description: List cloning commands
+        usage: cloneme
+    cloneme stop [player]:
+        description: Removes your clones or someone else's
+        usage: cloneme stop [player]
+    cloneme stopall:
+        description: Removes every clones
+        usage: cloneme stopall
+    cloneme reload:
+        description: Reloads plugin
+        usage: cloneme reload
+    cloneme add:
+        description: Adds a clone
+        usage: cloneme add
+    cloneme modify:
+        description: Modifies a clone
+        usage: cloneme modify
+    cloneme ready:
+        description: Start your clones
+        usage: cloneme ready
+    cloneme pause:
+        description: Pauses your clones
+        usage: cloneme pause
