@@ -40,7 +40,7 @@ public class CloneMe extends JavaPlugin {
 
     // NPC!
     private NPCManager npcManager;
-    
+
     private CloneManager cloneManager;
 
     public boolean usingNPC;
@@ -54,9 +54,9 @@ public class CloneMe extends JavaPlugin {
 
     @Override
     public void onEnable() {
-	
+
 	cloneManager = new CloneManager(this);
-	
+
 	PluginManager pm = getServer().getPluginManager();
 	pm.registerEvent(Event.Type.PLAYER_QUIT, this.cloneplayerlistener,
 		Event.Priority.Normal, this);
@@ -104,11 +104,11 @@ public class CloneMe extends JavaPlugin {
 	this.logger.info(PREFIX + " version " + VERSION + "_" + SUBVERSION
 		+ " is enabled!");
     }
-    
+
     public NPCManager getNPCManager() {
 	return npcManager;
     }
-    
+
     public CloneManager getCloneManager() {
 	return cloneManager;
     }
