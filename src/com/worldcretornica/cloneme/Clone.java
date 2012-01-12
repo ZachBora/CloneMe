@@ -31,20 +31,21 @@ public class Clone {
 	 */
     }
 
-    public String owner;
-    public long xtrans;
-    public long ytrans;
-    public long ztrans;
-    public int rotation;
-    public Direction mirror;
-    public double xstart;
-    public double ystart;
-    public double zstart;
-    public int xbstart;
-    public int ybstart;
-    public int zbstart;
-    public NPC npc;
-    public String name;
+    private String owner;
+    private long xtrans;
+    private long ytrans;
+    private long ztrans;
+    private int rotation;
+    private Direction mirror;
+  /*  private double xstart;
+    private double ystart;
+    private double zstart;
+    private int xbstart;
+    private int ybstart;
+    private int zbstart; */
+    private Location startingLocation;
+    private NPC npc;
+    private String name;
 
     /*
      * public Clone() { owner = ""; xtrans = 0; ytrans = 0; ztrans = 0; rotation
@@ -54,14 +55,15 @@ public class Clone {
      */
 
     public Clone(String owner, long xtrans, long ytrans, long ztrans,
-	    int rotation, Direction mirror, double xstart, double ystart,
-	    double zstart, int xbstart, int ybstart, int zbstart, World world,
+	    int rotation, Direction mirror, Location startingLocation,/*double xstart, double ystart,
+	    double zstart, int xbstart, int ybstart, int zbstart, */ World world,
 	    NPCManager manager, String name) {
 	this.owner = owner;
 	this.xtrans = xtrans;
 	this.ytrans = ytrans;
 	this.ztrans = ztrans;
 	this.rotation = rotation;
+	this.startingLocation = startingLocation;
 	if (mirror == Direction.WEST) {
 	    this.mirror = Direction.EAST;
 	} else if (mirror == Direction.SOUTH) {
@@ -69,21 +71,38 @@ public class Clone {
 	} else {
 	    this.mirror = mirror;
 	}
-	this.xstart = xstart;
+	/*this.xstart = xstart;
 	this.ystart = ystart;
 	this.zstart = zstart;
 	this.xbstart = xbstart;
 	this.ybstart = ybstart;
-	this.zbstart = zbstart;
+	this.zbstart = zbstart; */
 	this.name = name;
 
 	if (manager != null) {
 	    npc = manager.spawnNPC(owner, getNewLocation(new Location(world,
-		    xstart, ystart, zstart)), NPCType.HUMAN);
+		    startingLocation.getX(), startingLocation.getY(), startingLocation.getZ())), NPCType.HUMAN);
 
 	    ((NPCHuman) npc.getEntity()).name = name;
 	}
     }
+    
+    public String getOwner() {
+	return owner;
+    }
+    
+    public String getName() {
+	return name;
+    }
+    
+    public NPC getNPC() {
+	return npc;
+    }
+    
+    public Location getStartingLocation() {
+	return startingLocation;
+    }
+    
 
     public BlockFace getNewFace(BlockFace face) {
 	BlockFace newface = face;
@@ -154,12 +173,12 @@ public class Clone {
 	ztrans = 0;
 	rotation = 0;
 	mirror = Direction.NONE;
-	xstart = 0;
+	/*xstart = 0;
 	ystart = 0;
 	zstart = 0;
 	xbstart = 0;
 	ybstart = 0;
-	zbstart = 0;
+	zbstart = 0; */
 	npc = null;
     }
 
@@ -175,8 +194,8 @@ public class Clone {
 	Location location = oldlocation.clone();
 	location.add(xtrans, ytrans, ztrans);
 
-	double x = location.getX() - xstart;
-	double z = location.getZ() - zstart;
+	double x = location.getX() - startingLocation.getX();
+	double z = location.getZ() - startingLocation.getZ();
 
 	if (rotation == 90) {
 	    location.setX(-z);
@@ -202,7 +221,7 @@ public class Clone {
 	    location.setYaw(oldlocation.getYaw() + rotation);
 	}
 
-	location.add(xstart, 0, zstart);
+	location.add(startingLocation.getX(), 0, startingLocation.getZ());
 
 	return location;
     }
@@ -234,8 +253,8 @@ public class Clone {
 
 	location.add(xtrans, ytrans, ztrans);
 
-	double x = location.getBlockX() - xbstart;
-	double z = location.getBlockZ() - zbstart;
+	double x = location.getBlockX() - startingLocation.getBlockX();
+	double z = location.getBlockZ() - startingLocation.getBlockZ();
 
 	if (rotation == 90) {
 	    location.setX(-z);
@@ -257,7 +276,7 @@ public class Clone {
 	    location.setX(-location.getBlockX());
 	}
 
-	location.add(xbstart, 0, zbstart);
+	location.add(startingLocation.getBlockX(), 0, startingLocation.getBlockZ());
 
 	return location.getBlock();
     }

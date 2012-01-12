@@ -61,7 +61,7 @@ public class CloneMe extends JavaPlugin {
 	    for (Clone clone : clones) {
 		if (npcManager != null) {
 		    Packet29DestroyEntity p29 = new Packet29DestroyEntity(
-			    clone.npc.getEntityId());
+			    clone.getNPC().getEntityId());
 
 		    for (Player p : this.getServer().getOnlinePlayers()) {
 			((CraftPlayer) p).getHandle().netServerHandler
@@ -393,9 +393,9 @@ public class CloneMe extends JavaPlugin {
 				for (Clone clone : getClones(cloner)) {
 				    Packet20NamedEntitySpawn p20 = clone
 					    .makeNamedEntitySpawnPacket(ChatColor.GREEN
-						    + clone.name);
+						    + clone.getName());
 				    Packet29DestroyEntity p29 = new Packet29DestroyEntity(
-					    clone.npc.getEntityId());
+					    clone.getNPC().getEntityId());
 
 				    for (Player p : this.getServer()
 					    .getOnlinePlayers()) {
@@ -436,9 +436,9 @@ public class CloneMe extends JavaPlugin {
 			    if (npcManager != null) {
 				Packet20NamedEntitySpawn p20 = clone
 					.makeNamedEntitySpawnPacket(ChatColor.GREEN
-						+ clone.name);
+						+ clone.getName());
 				Packet29DestroyEntity p29 = new Packet29DestroyEntity(
-					clone.npc.getEntityId());
+					clone.getNPC().getEntityId());
 
 				for (Player p : this.getServer()
 					.getOnlinePlayers()) {
@@ -475,8 +475,7 @@ public class CloneMe extends JavaPlugin {
 	Location start = s.getLocation();
 
 	Clone clone = new Clone(s.getName(), xpos, ypos, zpos, rotation, dir,
-		start.getX(), start.getY(), start.getZ(), start.getBlockX(),
-		start.getBlockY(), start.getBlockZ(), s.getWorld(), npcManager,
+		start, s.getWorld(), npcManager,
 		name);
 
 	clone.setIteMinHand(s.getItemInHand());
@@ -490,7 +489,7 @@ public class CloneMe extends JavaPlugin {
 	if (npcManager != null) {
 	    Packet20NamedEntitySpawn p20 = clone.makeNamedEntitySpawnPacket();
 	    Packet29DestroyEntity p29 = new Packet29DestroyEntity(
-		    clone.npc.getEntityId());
+		    clone.getNPC().getEntityId());
 
 	    for (Player p : this.getServer().getOnlinePlayers()) {
 		((CraftPlayer) p).getHandle().netServerHandler.sendPacket(p29);
