@@ -35,12 +35,11 @@ public class CloneMe extends JavaPlugin {
     public final Logger logger = Logger.getLogger("Minecraft"); // TODO
 
     // Permissions
-    public PermissionHandler permissions;
-    public PermissionManager permpex;
-    boolean permissions3;
+    private PermissionHandler permissions;
+    private PermissionManager permpex;
 
     // NPC!
-    public NPCManager npcManager;
+    private NPCManager npcManager;
     
     private CloneManager cloneManager;
 
@@ -106,6 +105,10 @@ public class CloneMe extends JavaPlugin {
 		+ " is enabled!");
     }
     
+    public NPCManager getNPCManager() {
+	return npcManager;
+    }
+    
     public CloneManager getCloneManager() {
 	return cloneManager;
     }
@@ -155,7 +158,6 @@ public class CloneMe extends JavaPlugin {
 	    // We're using Permissions
 	    permpex = PermissionsEx.getPermissionManager();
 	    // Check for Permissions 3
-	    permissions3 = false;
 	    logger.info(PREFIX + " PermissionsEx "
 		    + pexTest.getDescription().getVersion() + " found");
 	    return;
@@ -172,7 +174,6 @@ public class CloneMe extends JavaPlugin {
 	// We're using Permissions
 	permissions = ((Permissions) permTest).getHandler();
 	// Check for Permissions 3
-	permissions3 = permTest.getDescription().getVersion().startsWith("3");
 	logger.info(PREFIX + " Permissions "
 		+ permTest.getDescription().getVersion() + " found");
     }

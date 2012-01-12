@@ -29,7 +29,7 @@ public class CloneManager {
 	Location start = player.getLocation();
 
 	Clone clone = new Clone(player.getName(), xpos, ypos, zpos, rotation,
-		dir, start, player.getWorld(), plugin.npcManager, name);
+		dir, start, player.getWorld(), plugin.getNPCManager(), name);
 
 	clone.setItemInHand(player.getItemInHand());
 	clone.setSneaking(player.isSneaking());
@@ -39,7 +39,7 @@ public class CloneManager {
 	}
 	clones.get(player.getName()).add(clone);
 
-	if (plugin.npcManager != null) {
+	if (plugin.getNPCManager() != null) {
 	    Packet20NamedEntitySpawn p20 = clone.makeNamedEntitySpawnPacket();
 	    Packet29DestroyEntity p29 = new Packet29DestroyEntity(clone
 		    .getNPC().getEntityId());
@@ -63,7 +63,7 @@ public class CloneManager {
 
     public void removeClones(String player) {
 	for (Clone clone : getClones(player)) {
-	    if (plugin.npcManager != null) {
+	    if (plugin.getNPCManager() != null) {
 		Packet29DestroyEntity p29 = new Packet29DestroyEntity(clone
 			.getNPC().getEntityId());
 
