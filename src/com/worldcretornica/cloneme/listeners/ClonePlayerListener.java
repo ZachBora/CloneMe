@@ -1,4 +1,4 @@
-package com.worldcretornica.cloneme;
+package com.worldcretornica.cloneme.listeners;
 
 import java.util.Set;
 import org.bukkit.Location;
@@ -14,6 +14,9 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.ItemStack;
 
+import com.worldcretornica.cloneme.Clone;
+import com.worldcretornica.cloneme.CloneMe;
+import com.worldcretornica.cloneme.ScheduledBlockChange;
 import com.worldcretornica.cloneme.ScheduledBlockChange.ChangeType;
 import com.worldcretornica.cloneme.events.ClonePlayerInteractEvent;
 

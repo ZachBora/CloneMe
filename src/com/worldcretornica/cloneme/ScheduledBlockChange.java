@@ -14,7 +14,7 @@ import com.worldcretornica.cloneme.events.CloneBlockPlaceEvent;
 
 public class ScheduledBlockChange implements Runnable {
 
-    enum ChangeType {
+    public enum ChangeType {
 	BLOCK_BREAK, BLOCK_PLACE, INTERACT
     }
 

@@ -1,4 +1,4 @@
-package com.worldcretornica.cloneme;
+package com.worldcretornica.cloneme.listeners;
 
 import java.util.Set;
 
@@ -7,6 +7,9 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockPlaceEvent;
 
+import com.worldcretornica.cloneme.Clone;
+import com.worldcretornica.cloneme.CloneMe;
+import com.worldcretornica.cloneme.ScheduledBlockChange;
 import com.worldcretornica.cloneme.ScheduledBlockChange.ChangeType;
 import com.worldcretornica.cloneme.events.CloneBlockBreakEvent;
 import com.worldcretornica.cloneme.events.CloneBlockPlaceEvent;

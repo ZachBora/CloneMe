@@ -29,6 +29,8 @@ import tk.npccreatures.npcs.NPCManager;
 import com.nijiko.permissions.PermissionHandler;
 import com.nijikokun.bukkit.Permissions.Permissions;
 import com.worldcretornica.cloneme.Clone.Direction;
+import com.worldcretornica.cloneme.listeners.CloneBlockListener;
+import com.worldcretornica.cloneme.listeners.ClonePlayerListener;
 
 public class CloneMe extends JavaPlugin {
 
