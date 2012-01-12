@@ -478,7 +478,7 @@ public class CloneMe extends JavaPlugin {
 		start, s.getWorld(), npcManager,
 		name);
 
-	clone.setIteMinHand(s.getItemInHand());
+	clone.setItemInHand(s.getItemInHand());
 	clone.setSneaking(s.isSneaking());
 
 	if (!clonelist.containsKey(s.getName())) {

@@ -938,7 +938,7 @@ public class Clone {
 	return true;
     }
 
-    public void setIteMinHand(ItemStack is) {
+    public void setItemInHand(ItemStack is) {
 	if (npc != null) {
 	    if (is.getAmount() == 0) {
 		((NPCHuman) npc.getEntity()).getPlayer().setItemInHand(null);

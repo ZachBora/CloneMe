@@ -113,7 +113,7 @@ public class ClonePlayerListener extends PlayerListener {
 	Set<Clone> clones = plugin.getClones(p.getName());
 	if (clones != null && clones.size() != 0) {
 	    for (Clone clone : clones) {
-		clone.setIteMinHand(is);
+		clone.setItemInHand(is);
 	    }
 	}
     }
