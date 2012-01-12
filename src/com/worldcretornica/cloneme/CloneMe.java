@@ -8,16 +8,11 @@ import java.util.logging.Logger;
 import net.minecraft.server.Packet20NamedEntitySpawn;
 import net.minecraft.server.Packet29DestroyEntity;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -29,10 +24,17 @@ import tk.npccreatures.npcs.NPCManager;
 import com.nijiko.permissions.PermissionHandler;
 import com.nijikokun.bukkit.Permissions.Permissions;
 import com.worldcretornica.cloneme.Clone.Direction;
+import com.worldcretornica.cloneme.commands.CMCommand;
 import com.worldcretornica.cloneme.listeners.CloneBlockListener;
 import com.worldcretornica.cloneme.listeners.ClonePlayerListener;
 
 public class CloneMe extends JavaPlugin {
+
+    // FINAL
+    public static final String NAME = "CloneMe";
+    public static final String PREFIX = "[CloneMe]";
+    public static final double VERSION = 0.1;
+    public static final int SUBVERSION = 0;
 
     public final ClonePlayerListener cloneplayerlistener = new ClonePlayerListener(
 	    this);
@@ -40,10 +42,6 @@ public class CloneMe extends JavaPlugin {
 	    this);
 
     public HashMap<String, Set<Clone>> clonelist;
-
-    public String pdfdescription;
-    private String pdfversion;
-
     public final Logger logger = Logger.getLogger("Minecraft");
 
     // Permissions
@@ -78,7 +76,7 @@ public class CloneMe extends JavaPlugin {
 
 	clonelist.clear();
 
-	this.logger.info(pdfdescription + " disabled.");
+	this.logger.info(PREFIX + " disabled.");
     }
 
     @Override
@@ -96,10 +94,6 @@ public class CloneMe extends JavaPlugin {
 		Event.Priority.Low, this);
 	pm.registerEvent(Event.Type.BLOCK_BREAK, this.cloneblocklistener,
 		Event.Priority.Low, this);
-
-	PluginDescriptionFile pdfFile = this.getDescription();
-	pdfdescription = pdfFile.getName();
-	pdfversion = pdfFile.getVersion();
 
 	setupPermissions();
 
@@ -120,351 +114,21 @@ public class CloneMe extends JavaPlugin {
 
 	    npcManager = ((NPCCreatures) npccreature).getNPCManager();
 
-	    this.logger.info("[" + pdfdescription + "] NPCCreatures v"
+	    this.logger.info(PREFIX + " NPCCreatures v"
 		    + npccreature.getDescription().getVersion() + " found!");
 
 	    npccreature = null;
 	} else {
 	    npcManager = null;
 	    this.logger
-		    .info("["
-			    + pdfdescription
-			    + "] Could not find NPCCreatures, clones will not be visible!");
+		    .info(PREFIX
+			    + "Could not find NPCCreatures, clones will not be visible!");
 	}
 
-	this.logger.info("[" + pdfdescription + "] version " + pdfversion
+	getCommand("cloneme").setExecutor(new CMCommand(this));
+
+	this.logger.info(PREFIX + " version " + VERSION + "_" + SUBVERSION
 		+ " is enabled!");
-    }
-
-    @Override
-    public boolean onCommand(CommandSender s, Command c, String l, String[] a) {
-	if (l.equalsIgnoreCase("cloneme")) {
-	    if (!(s instanceof Player)
-		    || this.checkPermissions((Player) s, "CloneMe.use")) {
-		if (a.length == 0) {
-		    s.sendMessage(ChatColor.BLUE + pdfdescription + " v"
-			    + pdfversion + ChatColor.WHITE
-			    + " [] means optional, <> means obligated");
-		    if (s instanceof Player)
-			s.sendMessage(ChatColor.RED + "/cloneme add "
-				+ ChatColor.WHITE + "Adds a new clone.");
-		    if (s instanceof Player)
-			s.sendMessage(ChatColor.RED + "/cloneme modify "
-				+ ChatColor.GREEN + "<id> " + ChatColor.WHITE
-				+ "Modify a clone. Use /list to get ids.");
-		    s.sendMessage(ChatColor.RED + "/cloneme remove "
-			    + ChatColor.GREEN + "<id> " + ChatColor.WHITE
-			    + "Removes a clone. Use /list to get ids.");
-		    if (s instanceof Player)
-			s.sendMessage(ChatColor.RED + "/cloneme ready "
-				+ ChatColor.WHITE + "Starts your clones.");
-		    if (s instanceof Player)
-			s.sendMessage(ChatColor.RED + "/cloneme pause "
-				+ ChatColor.WHITE + "Pause your clones.");
-		    s.sendMessage(ChatColor.RED + "/cloneme list "
-			    + ChatColor.GREEN + "[name] " + ChatColor.WHITE
-			    + "Lists clones.");
-		    s.sendMessage(ChatColor.RED + "/cloneme users "
-			    + ChatColor.WHITE + "Lists clone users.");
-		    if (s instanceof Player)
-			s.sendMessage(ChatColor.RED + "/cloneme save "
-				+ ChatColor.GREEN + "<name> " + ChatColor.WHITE
-				+ "Save your clones in a template.");
-		    if (s instanceof Player)
-			s.sendMessage(ChatColor.RED + "/cloneme load "
-				+ ChatColor.GREEN + "<name> " + ChatColor.WHITE
-				+ "Load clones from a template.");
-		    s.sendMessage(ChatColor.RED + "/cloneme stop "
-			    + ChatColor.GREEN + "[name] " + ChatColor.WHITE
-			    + "Removes the clones.");
-		    s.sendMessage(ChatColor.RED + "/cloneme stopall "
-			    + ChatColor.WHITE + "Stop all the clones.");
-		    s.sendMessage(ChatColor.RED + "/cloneme reload "
-			    + ChatColor.WHITE
-			    + "Reloads the plugin. Keeps clones.");
-		} else if (a[0].toString().equalsIgnoreCase("save")) {
-		    if (!(s instanceof Player)) {
-			s.sendMessage("[" + pdfdescription
-				+ "] Only players can save templates!");
-			return true;
-		    }
-
-		    // NPC bob = npcManager.getNPCs().get(0);
-		    // bob.walkTo(((Player) s).getLocation());
-
-		    // TODO
-		    s.sendMessage(ChatColor.RED + "Not yet implemented!");
-		} else if (a[0].toString().equalsIgnoreCase("load")) {
-		    if (!(s instanceof Player)) {
-			s.sendMessage("[" + pdfdescription
-				+ "] Only players can load templates!");
-			return true;
-		    }
-
-		    // TODO
-		    s.sendMessage(ChatColor.RED + "Not yet implemented!");
-		} else if (a[0].toString().equalsIgnoreCase("remove")) {
-		    // TODO
-		    s.sendMessage(ChatColor.RED + "Not yet implemented!");
-		} else if (a[0].toString().equalsIgnoreCase("ready")) {
-		    if (!(s instanceof Player)) {
-			s.sendMessage("[" + pdfdescription
-				+ "] Only players can be ready!");
-			return true;
-		    }
-
-		    // TODO
-		    s.sendMessage(ChatColor.RED + "Not yet implemented!");
-		} else if (a[0].toString().equalsIgnoreCase("pause")) {
-		    if (!(s instanceof Player)) {
-			s.sendMessage("[" + pdfdescription
-				+ "] Only players can pause!");
-			return true;
-		    }
-
-		    // TODO
-		    s.sendMessage(ChatColor.RED + "Not yet implemented!");
-		} else if (a[0].toString().equalsIgnoreCase("list")) {
-		    // TODO
-		    s.sendMessage(ChatColor.RED + "Not yet implemented!");
-		} else if (a[0].toString().equalsIgnoreCase("add")) {
-		    if (!(s instanceof Player)) {
-			s.sendMessage("[" + pdfdescription
-				+ "] Only players can have clones!");
-			return true;
-		    }
-
-		    if (a.length == 1) {
-			s.sendMessage(ChatColor.BLUE + pdfdescription + " v"
-				+ pdfversion + " " + ChatColor.RED
-				+ "/cloneme add [params]");
-			s.sendMessage("Possible parameters :");
-			s.sendMessage(ChatColor.RED + "[r:0/90/180/270] "
-				+ ChatColor.WHITE + "Clone will be rotated.");
-			s.sendMessage(ChatColor.RED + "[m:north/west] "
-				+ ChatColor.WHITE + "Clone will be mirrored.");
-			s.sendMessage(ChatColor.RED + "[x:0] [z:0] [y:0] "
-				+ ChatColor.WHITE
-				+ "Clone will be transitioned.");
-			s.sendMessage(ChatColor.RED + "[n:name] "
-				+ ChatColor.WHITE
-				+ "Sets the overhead name of the clone.");
-			s.sendMessage("Example: " + ChatColor.GREEN
-				+ "/cloneme add r:90 x:-4 z:3 n:Boblennon");
-		    } else {
-
-			int nbparam = 0;
-
-			long xpos = 0;
-			long ypos = 0;
-			long zpos = 0;
-			String name = s.getName();
-
-			int rotation = 0;
-			Direction dir = Direction.NONE;
-
-			for (String arg : a) {
-			    if (arg.toLowerCase().contains("x:")) {
-				try {
-				    xpos = Long.parseLong(arg.substring(2));
-				    nbparam += 1;
-				} catch (NumberFormatException ex) {
-				    s.sendMessage(ChatColor.RED
-					    + "["
-					    + pdfdescription
-					    + "] Error : Argument 'x:' need to be followed by a whole number! Ex: 'x:5'");
-				    return true;
-				}
-			    } else if (arg.toLowerCase().contains("n:")) {
-				name = arg.substring(2);
-				if (name.length() == 0) {
-				    s.sendMessage(ChatColor.RED
-					    + "["
-					    + pdfdescription
-					    + "] Error : Argument 'n:' need to be followed by a string! Ex: 'n:Bob'");
-				}
-			    } else if (arg.toLowerCase().contains("y:")) {
-				try {
-				    ypos = Integer.parseInt(arg.substring(2));
-				    nbparam += 1;
-				} catch (NumberFormatException ex) {
-				    s.sendMessage(ChatColor.RED
-					    + "["
-					    + pdfdescription
-					    + "] Error : Argument 'y:' need to be followed by a whole number! Ex: 'y:5'");
-				    return true;
-				}
-			    } else if (arg.toLowerCase().contains("z:")) {
-				try {
-				    zpos = Integer.parseInt(arg.substring(2));
-				    nbparam += 1;
-				} catch (NumberFormatException ex) {
-				    s.sendMessage(ChatColor.RED
-					    + "["
-					    + pdfdescription
-					    + "] Error : Argument 'z:' need to be followed by a whole number! Ex: 'z:5'");
-				    return true;
-				}
-			    } else if (arg.toLowerCase().contains("m:")) {
-				try {
-				    dir = Direction.valueOf(arg.substring(2));
-				    nbparam += 1;
-				} catch (Exception ex) {
-				    s.sendMessage(ChatColor.RED
-					    + "["
-					    + pdfdescription
-					    + "] Error : Argument 'mirror:' need to be a valid direction! Ex: 'mirror:north'");
-				    return true;
-				}
-			    } else if (arg.toLowerCase().contains("r:")) {
-				try {
-				    rotation = Integer.parseInt(arg
-					    .substring(2));
-				    if (rotation % 90 != 0)
-					throw new NumberFormatException();
-				    nbparam += 1;
-				} catch (NumberFormatException ex) {
-				    s.sendMessage(ChatColor.RED
-					    + "["
-					    + pdfdescription
-					    + "] Error : Argument 'r:' need to be followed by a multiple of 90! Ex: 'r:180'");
-				    return true;
-				}
-			    }
-			}
-
-			if (nbparam > 0) {
-			    AddClone((Player) s, xpos, ypos, zpos, rotation,
-				    dir, name);
-
-			    s.sendMessage("Clone added!");
-			} else {
-			    s.sendMessage(ChatColor.RED
-				    + "["
-				    + pdfdescription
-				    + "] Error : You must at least put one of these: r: x: y: z: m: ");
-			    return true;
-			}
-		    }
-		} else if (a[0].toString().equalsIgnoreCase("modify")) {
-		    if (!(s instanceof Player)) {
-			s.sendMessage("[" + pdfdescription
-				+ "] Only players can modify clones!");
-			return true;
-		    }
-
-		    if (a.length == 1) {
-			s.sendMessage(ChatColor.BLUE + pdfdescription + " v"
-				+ pdfversion + " " + ChatColor.RED
-				+ "/cloneme modify <id> [params]");
-			s.sendMessage("Use /list to get id");
-			s.sendMessage("Possible parameters :");
-			s.sendMessage(ChatColor.RED + "[r:0/90/180/270] "
-				+ ChatColor.WHITE + "Clone will be rotated.");
-			s.sendMessage(ChatColor.RED + "[mirror:north/west] "
-				+ ChatColor.WHITE + "Clone will be mirrored.");
-			s.sendMessage(ChatColor.RED + "[x:0] [z:0] [y:0] "
-				+ ChatColor.WHITE
-				+ "Clone will be transitioned.");
-			s.sendMessage(ChatColor.RED + "[n:name] "
-				+ ChatColor.WHITE
-				+ "Sets the overhead name of the clone.");
-		    } else {
-			// TODO
-			s.sendMessage(ChatColor.RED + "Not yet implemented!");
-			// s.sendMessage("Clone modified!");
-		    }
-		} else if (a[0].toString().equalsIgnoreCase("stop")) {
-		    String cloner = s.getName();
-
-		    if (a.length == 2 && a[1].toString() != "") {
-			cloner = a[1].toString();
-		    }
-
-		    Player pl = getServer().getPlayer(cloner);
-		    OfflinePlayer opl = null;
-
-		    if (pl == null)
-			opl = getServer().getOfflinePlayer(cloner);
-
-		    if (pl == null && opl == null) {
-			s.sendMessage("Player " + cloner + " not found.");
-		    } else {
-			if (clonelist.containsKey(cloner)) {
-			    if (npcManager != null) {
-				for (Clone clone : getClones(cloner)) {
-				    Packet20NamedEntitySpawn p20 = clone
-					    .makeNamedEntitySpawnPacket(ChatColor.GREEN
-						    + clone.getName());
-				    Packet29DestroyEntity p29 = new Packet29DestroyEntity(
-					    clone.getNPC().getEntityId());
-
-				    for (Player p : this.getServer()
-					    .getOnlinePlayers()) {
-					((CraftPlayer) p).getHandle().netServerHandler
-						.sendPacket(p29);
-					((CraftPlayer) p).getHandle().netServerHandler
-						.sendPacket(p20);
-				    }
-
-				    clone.remove();
-				    clone = null;
-				}
-			    }
-
-			    clonelist.remove(cloner);
-
-			    if (s instanceof Player
-				    && (pl == null || ((Player) s).equals(pl))) {
-				s.sendMessage(cloner
-					+ "'s clones have been removed!");
-			    } else {
-				if (!(s instanceof Player)) {
-				    s.sendMessage("Clones removed!");
-				}
-
-				if (pl != null) {
-				    pl.sendMessage(ChatColor.RED + s.getName()
-					    + " removed your clones!");
-				}
-			    }
-			} else {
-			    s.sendMessage("Did not have any clones!");
-			}
-		    }
-		} else if (a[0].toString().equalsIgnoreCase("stopall")) {
-		    for (Set<Clone> clones : clonelist.values()) {
-			for (Clone clone : clones) {
-			    if (npcManager != null) {
-				Packet20NamedEntitySpawn p20 = clone
-					.makeNamedEntitySpawnPacket(ChatColor.GREEN
-						+ clone.getName());
-				Packet29DestroyEntity p29 = new Packet29DestroyEntity(
-					clone.getNPC().getEntityId());
-
-				for (Player p : this.getServer()
-					.getOnlinePlayers()) {
-				    ((CraftPlayer) p).getHandle().netServerHandler
-					    .sendPacket(p29);
-				    ((CraftPlayer) p).getHandle().netServerHandler
-					    .sendPacket(p20);
-				}
-			    }
-
-			    clone.remove();
-			    clone = null;
-			}
-		    }
-
-		    clonelist.clear();
-
-		    s.sendMessage("Everyone's clones removed!");
-		}
-	    }
-	    return true;
-	} else {
-	    return false;
-	}
     }
 
     public void schedule(Runnable runnable, long delay) {
@@ -472,7 +136,7 @@ public class CloneMe extends JavaPlugin {
 		delay);
     }
 
-    public void AddClone(Player s, long xpos, long ypos, long zpos,
+    public void addClone(Player s, long xpos, long ypos, long zpos,
 	    int rotation, Direction dir, String name) {
 	Location start = s.getLocation();
 
@@ -544,18 +208,16 @@ public class CloneMe extends JavaPlugin {
 	    permpex = PermissionsEx.getPermissionManager();
 	    // Check for Permissions 3
 	    permissions3 = false;
-	    logger.info("[" + pdfdescription + "] PermissionsEx "
+	    logger.info(PREFIX + " PermissionsEx "
 		    + pexTest.getDescription().getVersion() + " found");
 	    return;
 	} else if (permTest == null) {
-	    logger.info("[" + pdfdescription
-		    + "] Permissions not found, using SuperPerms");
+	    logger.info(PREFIX + " Permissions not found, using SuperPerms");
 	    return;
 	}
 	// Check if it's a bridge
 	if (permTest.getDescription().getVersion().startsWith("2.7.7")) {
-	    logger.info("[" + pdfdescription
-		    + "] Found Permissions Bridge. Using SuperPerms");
+	    logger.info(PREFIX + " Found Permissions Bridge. Using SuperPerms");
 	    return;
 	}
 
@@ -563,11 +225,11 @@ public class CloneMe extends JavaPlugin {
 	permissions = ((Permissions) permTest).getHandler();
 	// Check for Permissions 3
 	permissions3 = permTest.getDescription().getVersion().startsWith("3");
-	logger.info("[" + pdfdescription + "] Permissions "
+	logger.info(PREFIX + " Permissions "
 		+ permTest.getDescription().getVersion() + " found");
     }
 
-    public Boolean checkPermissions(Player player, String node) {
+    public boolean checkPermissions(Player player, String node) {
 	// Permissions
 	if (this.permissions != null) {
 	    if (this.permissions.has(player, node))
@@ -578,7 +240,7 @@ public class CloneMe extends JavaPlugin {
 		return true;
 	    // SuperPerms
 	} else if (player.hasPermission(node)
-		|| player.hasPermission(pdfdescription + ".*")
+		|| player.hasPermission(NAME + ".*")
 		|| player.hasPermission("*")) {
 	    return true;
 	} else if (player.isOp()) {
