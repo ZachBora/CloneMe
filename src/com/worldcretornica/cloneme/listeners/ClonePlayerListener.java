@@ -36,7 +36,7 @@ public class ClonePlayerListener extends PlayerListener {
 	if (!(event instanceof ClonePlayerInteractEvent)) {
 	    Player p = event.getPlayer();
 
-	    Set<Clone> clones = plugin.getClones(p.getName());
+	    Set<Clone> clones = plugin.getCloneManager().getClones(p);
 	    if (clones != null && clones.size() != 0) {
 		for (Clone clone : clones) {
 		    plugin.schedule(
@@ -61,7 +61,7 @@ public class ClonePlayerListener extends PlayerListener {
 	Location loc = event.getTo();
 	Player p = event.getPlayer();
 
-	Set<Clone> clones = plugin.getClones(p.getName());
+	Set<Clone> clones = plugin.getCloneManager().getClones(p);
 	if (clones != null && loc != null && clones.size() != 0) {
 	    for (Clone clone : clones) {
 		clone.move(loc);
@@ -82,7 +82,7 @@ public class ClonePlayerListener extends PlayerListener {
 	Player p = event.getPlayer();
 	boolean sneaking = event.isSneaking();
 
-	Set<Clone> clones = plugin.getClones(p.getName());
+	Set<Clone> clones = plugin.getCloneManager().getClones(p);
 	if (clones != null && clones.size() != 0) {
 	    for (Clone clone : clones) {
 		clone.setSneaking(sneaking);
@@ -98,7 +98,7 @@ public class ClonePlayerListener extends PlayerListener {
 	if (event.getAnimationType() == PlayerAnimationType.ARM_SWING) {
 	    Player p = event.getPlayer();
 
-	    Set<Clone> clones = plugin.getClones(p.getName());
+	    Set<Clone> clones = plugin.getCloneManager().getClones(p);
 	    if (clones != null && clones.size() != 0) {
 		for (Clone clone : clones) {
 		    clone.doArmSwing();
@@ -113,7 +113,7 @@ public class ClonePlayerListener extends PlayerListener {
 	Player p = event.getPlayer();
 	ItemStack is = p.getInventory().getItem(event.getNewSlot());
 
-	Set<Clone> clones = plugin.getClones(p.getName());
+	Set<Clone> clones = plugin.getCloneManager().getClones(p);
 	if (clones != null && clones.size() != 0) {
 	    for (Clone clone : clones) {
 		clone.setItemInHand(is);

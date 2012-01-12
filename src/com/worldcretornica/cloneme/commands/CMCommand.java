@@ -1,19 +1,12 @@
 package com.worldcretornica.cloneme.commands;
 
-import java.util.Set;
-
-import net.minecraft.server.Packet20NamedEntitySpawn;
-import net.minecraft.server.Packet29DestroyEntity;
-
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
-import com.worldcretornica.cloneme.Clone;
 import com.worldcretornica.cloneme.Clone.Direction;
 import com.worldcretornica.cloneme.CloneMe;
 
@@ -218,8 +211,8 @@ public class CMCommand implements CommandExecutor {
 			}
 
 			if (nbparam > 0) {
-			    plugin.addClone((Player) s, xpos, ypos, zpos,
-				    rotation, dir, name);
+			    plugin.getCloneManager().spawnClone((Player) s,
+				    xpos, ypos, zpos, rotation, dir, name);
 
 			    s.sendMessage("Clone added!");
 			} else {
@@ -274,73 +267,26 @@ public class CMCommand implements CommandExecutor {
 		    if (pl == null && opl == null) {
 			s.sendMessage("Player " + cloner + " not found.");
 		    } else {
-			if (plugin.clonelist.containsKey(cloner)) {
-			    if (plugin.npcManager != null) {
-				for (Clone clone : plugin.getClones(cloner)) {
-				    Packet20NamedEntitySpawn p20 = clone
-					    .makeNamedEntitySpawnPacket(ChatColor.GREEN
-						    + clone.getName());
-				    Packet29DestroyEntity p29 = new Packet29DestroyEntity(
-					    clone.getNPC().getEntityId());
 
-				    for (Player p : plugin.getServer()
-					    .getOnlinePlayers()) {
-					((CraftPlayer) p).getHandle().netServerHandler
-						.sendPacket(p29);
-					((CraftPlayer) p).getHandle().netServerHandler
-						.sendPacket(p20);
-				    }
+			plugin.getCloneManager().removeClones(cloner);
 
-				    clone.remove();
-				    clone = null;
-				}
-			    }
-
-			    plugin.clonelist.remove(cloner);
-
-			    if (s instanceof Player
-				    && (pl == null || ((Player) s).equals(pl))) {
-				s.sendMessage(cloner
-					+ "'s clones have been removed!");
-			    } else {
-				if (!(s instanceof Player)) {
-				    s.sendMessage("Clones removed!");
-				}
-
-				if (pl != null) {
-				    pl.sendMessage(ChatColor.RED + s.getName()
-					    + " removed your clones!");
-				}
-			    }
+			if (s instanceof Player
+				&& (pl == null || ((Player) s).equals(pl))) {
+			    s.sendMessage(cloner
+				    + "'s clones have been removed!");
 			} else {
-			    s.sendMessage("Did not have any clones!");
+			    if (!(s instanceof Player)) {
+				s.sendMessage("Clones removed!");
+			    }
+
+			    if (pl != null) {
+				pl.sendMessage(ChatColor.RED + s.getName()
+					+ " removed your clones!");
+			    }
 			}
 		    }
 		} else if (a[0].toString().equalsIgnoreCase("stopall")) {
-		    for (Set<Clone> clones : plugin.clonelist.values()) {
-			for (Clone clone : clones) {
-			    if (plugin.npcManager != null) {
-				Packet20NamedEntitySpawn p20 = clone
-					.makeNamedEntitySpawnPacket(ChatColor.GREEN
-						+ clone.getName());
-				Packet29DestroyEntity p29 = new Packet29DestroyEntity(
-					clone.getNPC().getEntityId());
-
-				for (Player p : plugin.getServer()
-					.getOnlinePlayers()) {
-				    ((CraftPlayer) p).getHandle().netServerHandler
-					    .sendPacket(p29);
-				    ((CraftPlayer) p).getHandle().netServerHandler
-					    .sendPacket(p20);
-				}
-			    }
-
-			    clone.remove();
-			    clone = null;
-			}
-		    }
-
-		    plugin.clonelist.clear();
+		    plugin.getCloneManager().removeAllClones();
 
 		    s.sendMessage("Everyone's clones removed!");
 		}

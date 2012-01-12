@@ -30,7 +30,7 @@ public class CloneBlockListener extends BlockListener {
 	if (!(event instanceof CloneBlockBreakEvent)) {
 	    Player p = event.getPlayer();
 
-	    Set<Clone> clones = plugin.getClones(p.getName());
+	    Set<Clone> clones = plugin.getCloneManager().getClones(p);
 	    if (clones != null && clones.size() != 0) {
 		for (Clone clone : clones) {
 		    plugin.schedule(new ScheduledBlockChange(clone, plugin, p,
@@ -48,7 +48,7 @@ public class CloneBlockListener extends BlockListener {
 	if (!(event instanceof CloneBlockPlaceEvent)) {
 	    Player p = event.getPlayer();
 
-	    Set<Clone> clones = plugin.getClones(p.getName());
+	    Set<Clone> clones = plugin.getCloneManager().getClones(p);
 	    if (clones != null && clones.size() != 0) {
 		for (Clone clone : clones) {
 		    plugin.schedule(new ScheduledBlockChange(clone, plugin, p,

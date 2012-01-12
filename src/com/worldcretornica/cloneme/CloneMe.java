@@ -1,15 +1,7 @@
 package com.worldcretornica.cloneme;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.logging.Logger;
 
-import net.minecraft.server.Packet20NamedEntitySpawn;
-import net.minecraft.server.Packet29DestroyEntity;
-
-import org.bukkit.Location;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.Plugin;
@@ -23,7 +15,6 @@ import tk.npccreatures.npcs.NPCManager;
 
 import com.nijiko.permissions.PermissionHandler;
 import com.nijikokun.bukkit.Permissions.Permissions;
-import com.worldcretornica.cloneme.Clone.Direction;
 import com.worldcretornica.cloneme.commands.CMCommand;
 import com.worldcretornica.cloneme.listeners.CloneBlockListener;
 import com.worldcretornica.cloneme.listeners.ClonePlayerListener;
@@ -34,15 +25,14 @@ public class CloneMe extends JavaPlugin {
     public static final String NAME = "CloneMe";
     public static final String PREFIX = "[CloneMe]";
     public static final double VERSION = 0.1;
-    public static final int SUBVERSION = 0;
+    public static final int SUBVERSION = 1;
 
-    public final ClonePlayerListener cloneplayerlistener = new ClonePlayerListener(
+    private final ClonePlayerListener cloneplayerlistener = new ClonePlayerListener(
 	    this);
-    public final CloneBlockListener cloneblocklistener = new CloneBlockListener(
+    private final CloneBlockListener cloneblocklistener = new CloneBlockListener(
 	    this);
 
-    public HashMap<String, Set<Clone>> clonelist;
-    public final Logger logger = Logger.getLogger("Minecraft");
+    public final Logger logger = Logger.getLogger("Minecraft"); // TODO
 
     // Permissions
     public PermissionHandler permissions;
@@ -51,36 +41,23 @@ public class CloneMe extends JavaPlugin {
 
     // NPC!
     public NPCManager npcManager;
+    
+    private CloneManager cloneManager;
 
     public boolean usingNPC;
 
     @Override
     public void onDisable() {
-
-	for (Set<Clone> clones : clonelist.values()) {
-	    for (Clone clone : clones) {
-		if (npcManager != null) {
-		    Packet29DestroyEntity p29 = new Packet29DestroyEntity(clone
-			    .getNPC().getEntityId());
-
-		    for (Player p : this.getServer().getOnlinePlayers()) {
-			((CraftPlayer) p).getHandle().netServerHandler
-				.sendPacket(p29);
-		    }
-		}
-
-		clone.remove();
-		clone = null;
-	    }
-	}
-
-	clonelist.clear();
+	cloneManager.removeAllClones();
 
 	this.logger.info(PREFIX + " disabled.");
     }
 
     @Override
     public void onEnable() {
+	
+	cloneManager = new CloneManager(this);
+	
 	PluginManager pm = getServer().getPluginManager();
 	pm.registerEvent(Event.Type.PLAYER_QUIT, this.cloneplayerlistener,
 		Event.Priority.Normal, this);
@@ -96,8 +73,6 @@ public class CloneMe extends JavaPlugin {
 		Event.Priority.Low, this);
 
 	setupPermissions();
-
-	clonelist = new HashMap<String, Set<Clone>>();
 
 	if (getServer().getPluginManager().isPluginEnabled("NPCCreatures")) {
 	    pm.registerEvent(Event.Type.PLAYER_MOVE, this.cloneplayerlistener,
@@ -130,37 +105,14 @@ public class CloneMe extends JavaPlugin {
 	this.logger.info(PREFIX + " version " + VERSION + "_" + SUBVERSION
 		+ " is enabled!");
     }
+    
+    public CloneManager getCloneManager() {
+	return cloneManager;
+    }
 
     public void schedule(Runnable runnable, long delay) {
 	getServer().getScheduler().scheduleSyncDelayedTask(this, runnable,
 		delay);
-    }
-
-    public void addClone(Player s, long xpos, long ypos, long zpos,
-	    int rotation, Direction dir, String name) {
-	Location start = s.getLocation();
-
-	Clone clone = new Clone(s.getName(), xpos, ypos, zpos, rotation, dir,
-		start, s.getWorld(), npcManager, name);
-
-	clone.setItemInHand(s.getItemInHand());
-	clone.setSneaking(s.isSneaking());
-
-	if (!clonelist.containsKey(s.getName())) {
-	    clonelist.put(s.getName(), new HashSet<Clone>());
-	}
-	clonelist.get(s.getName()).add(clone);
-
-	if (npcManager != null) {
-	    Packet20NamedEntitySpawn p20 = clone.makeNamedEntitySpawnPacket();
-	    Packet29DestroyEntity p29 = new Packet29DestroyEntity(clone
-		    .getNPC().getEntityId());
-
-	    for (Player p : this.getServer().getOnlinePlayers()) {
-		((CraftPlayer) p).getHandle().netServerHandler.sendPacket(p29);
-		((CraftPlayer) p).getHandle().netServerHandler.sendPacket(p20);
-	    }
-	}
     }
 
     /*
@@ -188,10 +140,6 @@ public class CloneMe extends JavaPlugin {
      * 
      * return direction.none; }
      */
-
-    public Set<Clone> getClones(String name) {
-	return clonelist.get(name);
-    }
 
     private void setupPermissions() {
 	if (permissions != null)
