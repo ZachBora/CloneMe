@@ -28,7 +28,7 @@ import tk.npccreatures.npcs.NPCManager;
 
 import com.nijiko.permissions.PermissionHandler;
 import com.nijikokun.bukkit.Permissions.Permissions;
-import com.worldcretornica.cloneme.Clone.direction;
+import com.worldcretornica.cloneme.Clone.Direction;
 
 public class CloneMe extends JavaPlugin {
 
@@ -69,7 +69,7 @@ public class CloneMe extends JavaPlugin {
 		    }
 		}
 
-		clone.Remove();
+		clone.remove();
 		clone = null;
 	    }
 	}
@@ -259,7 +259,7 @@ public class CloneMe extends JavaPlugin {
 			String name = s.getName();
 
 			int rotation = 0;
-			direction dir = direction.none;
+			Direction dir = Direction.NONE;
 
 			for (String arg : a) {
 			    if (arg.toLowerCase().contains("x:")) {
@@ -305,7 +305,7 @@ public class CloneMe extends JavaPlugin {
 				}
 			    } else if (arg.toLowerCase().contains("m:")) {
 				try {
-				    dir = direction.valueOf(arg.substring(2));
+				    dir = Direction.valueOf(arg.substring(2));
 				    nbparam += 1;
 				} catch (Exception ex) {
 				    s.sendMessage(ChatColor.RED
@@ -392,7 +392,7 @@ public class CloneMe extends JavaPlugin {
 			    if (npcManager != null) {
 				for (Clone clone : getClones(cloner)) {
 				    Packet20NamedEntitySpawn p20 = clone
-					    .packetMaker(ChatColor.GREEN
+					    .makeNamedEntitySpawnPacket(ChatColor.GREEN
 						    + clone.name);
 				    Packet29DestroyEntity p29 = new Packet29DestroyEntity(
 					    clone.npc.getEntityId());
@@ -405,7 +405,7 @@ public class CloneMe extends JavaPlugin {
 						.sendPacket(p20);
 				    }
 
-				    clone.Remove();
+				    clone.remove();
 				    clone = null;
 				}
 			    }
@@ -435,7 +435,7 @@ public class CloneMe extends JavaPlugin {
 			for (Clone clone : clones) {
 			    if (npcManager != null) {
 				Packet20NamedEntitySpawn p20 = clone
-					.packetMaker(ChatColor.GREEN
+					.makeNamedEntitySpawnPacket(ChatColor.GREEN
 						+ clone.name);
 				Packet29DestroyEntity p29 = new Packet29DestroyEntity(
 					clone.npc.getEntityId());
@@ -449,7 +449,7 @@ public class CloneMe extends JavaPlugin {
 				}
 			    }
 
-			    clone.Remove();
+			    clone.remove();
 			    clone = null;
 			}
 		    }
@@ -471,7 +471,7 @@ public class CloneMe extends JavaPlugin {
     }
 
     public void AddClone(Player s, long xpos, long ypos, long zpos,
-	    int rotation, direction dir, String name) {
+	    int rotation, Direction dir, String name) {
 	Location start = s.getLocation();
 
 	Clone clone = new Clone(s.getName(), xpos, ypos, zpos, rotation, dir,
@@ -479,8 +479,8 @@ public class CloneMe extends JavaPlugin {
 		start.getBlockY(), start.getBlockZ(), s.getWorld(), npcManager,
 		name);
 
-	clone.ItemInHand(s.getItemInHand());
-	clone.Sneak(s.isSneaking());
+	clone.setIteMinHand(s.getItemInHand());
+	clone.setSneaking(s.isSneaking());
 
 	if (!clonelist.containsKey(s.getName())) {
 	    clonelist.put(s.getName(), new HashSet<Clone>());
@@ -488,7 +488,7 @@ public class CloneMe extends JavaPlugin {
 	clonelist.get(s.getName()).add(clone);
 
 	if (npcManager != null) {
-	    Packet20NamedEntitySpawn p20 = clone.packetMaker();
+	    Packet20NamedEntitySpawn p20 = clone.makeNamedEntitySpawnPacket();
 	    Packet29DestroyEntity p29 = new Packet29DestroyEntity(
 		    clone.npc.getEntityId());
 

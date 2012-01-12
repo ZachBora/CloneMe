@@ -61,7 +61,7 @@ public class ClonePlayerListener extends PlayerListener {
 	Set<Clone> clones = plugin.getClones(p.getName());
 	if (clones != null && loc != null && clones.size() != 0) {
 	    for (Clone clone : clones) {
-		clone.Move(loc);
+		clone.move(loc);
 	    }
 	}
     }
@@ -82,7 +82,7 @@ public class ClonePlayerListener extends PlayerListener {
 	Set<Clone> clones = plugin.getClones(p.getName());
 	if (clones != null && clones.size() != 0) {
 	    for (Clone clone : clones) {
-		clone.Sneak(sneaking);
+		clone.setSneaking(sneaking);
 	    }
 	}
     }
@@ -98,7 +98,7 @@ public class ClonePlayerListener extends PlayerListener {
 	    Set<Clone> clones = plugin.getClones(p.getName());
 	    if (clones != null && clones.size() != 0) {
 		for (Clone clone : clones) {
-		    clone.Swing();
+		    clone.doArmSwing();
 		}
 	    }
 	}
@@ -113,7 +113,7 @@ public class ClonePlayerListener extends PlayerListener {
 	Set<Clone> clones = plugin.getClones(p.getName());
 	if (clones != null && clones.size() != 0) {
 	    for (Clone clone : clones) {
-		clone.ItemInHand(is);
+		clone.setIteMinHand(is);
 	    }
 	}
     }

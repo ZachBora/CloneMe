@@ -24,8 +24,8 @@ public class Clone {
 
     public final Logger logger = Logger.getLogger("Minecraft");
 
-    public enum direction {
-	none, east, west, south, north,
+    public enum Direction {
+	NONE, EAST, WEST, SOUTH, NORTH,
 	/*
 	 * northeast, northwest, southeast, southwest
 	 */
@@ -36,7 +36,7 @@ public class Clone {
     public long ytrans;
     public long ztrans;
     public int rotation;
-    public direction mirror;
+    public Direction mirror;
     public double xstart;
     public double ystart;
     public double zstart;
@@ -46,55 +46,46 @@ public class Clone {
     public NPC npc;
     public String name;
 
-    public Clone() {
-	owner = "";
-	xtrans = 0;
-	ytrans = 0;
-	ztrans = 0;
-	rotation = 0;
-	mirror = direction.none;
-	xstart = 0;
-	ystart = 0;
-	zstart = 0;
-	xbstart = 0;
-	ybstart = 0;
-	zbstart = 0;
-	npc = null;
-	name = "";
-    }
+    /*
+     * public Clone() { owner = ""; xtrans = 0; ytrans = 0; ztrans = 0; rotation
+     * = 0; mirror = Direction.NONE; xstart = 0; ystart = 0; zstart = 0; xbstart
+     * = 0; ybstart = 0; zbstart = 0; npc = null; name = ""; // SHOULDN'T BE
+     * USED }
+     */
 
-    public Clone(String Owner, long Xtrans, long Ytrans, long Ztrans,
-	    int Rotation, direction Mirror, double Xstart, double Ystart,
-	    double Zstart, int Xbstart, int Ybstart, int Zbstart, World world,
-	    NPCManager manager, String Name) {
-	owner = Owner;
-	xtrans = Xtrans;
-	ytrans = Ytrans;
-	ztrans = Ztrans;
-	rotation = Rotation;
-	if (Mirror == direction.west)
-	    mirror = direction.east;
-	else if (Mirror == direction.south)
-	    mirror = direction.north;
-	else
-	    mirror = Mirror;
-	xstart = Xstart;
-	ystart = Ystart;
-	zstart = Zstart;
-	xbstart = Xbstart;
-	ybstart = Ybstart;
-	zbstart = Zbstart;
-	name = Name;
+    public Clone(String owner, long xtrans, long ytrans, long ztrans,
+	    int rotation, Direction mirror, double xstart, double ystart,
+	    double zstart, int xbstart, int ybstart, int zbstart, World world,
+	    NPCManager manager, String name) {
+	this.owner = owner;
+	this.xtrans = xtrans;
+	this.ytrans = ytrans;
+	this.ztrans = ztrans;
+	this.rotation = rotation;
+	if (mirror == Direction.WEST) {
+	    this.mirror = Direction.EAST;
+	} else if (mirror == Direction.SOUTH) {
+	    this.mirror = Direction.NORTH;
+	} else {
+	    this.mirror = mirror;
+	}
+	this.xstart = xstart;
+	this.ystart = ystart;
+	this.zstart = zstart;
+	this.xbstart = xbstart;
+	this.ybstart = ybstart;
+	this.zbstart = zbstart;
+	this.name = name;
 
 	if (manager != null) {
 	    npc = manager.spawnNPC(owner, getNewLocation(new Location(world,
-		    Xstart, Ystart, Zstart)), NPCType.HUMAN);
+		    xstart, ystart, zstart)), NPCType.HUMAN);
 
 	    ((NPCHuman) npc.getEntity()).name = name;
 	}
     }
 
-    public BlockFace getnewface(BlockFace face) {
+    public BlockFace getNewFace(BlockFace face) {
 	BlockFace newface = face;
 
 	for (int ctr = 0; ctr < rotation; ctr++) {
@@ -153,7 +144,7 @@ public class Clone {
 	return newface;
     }
 
-    public void Remove() {
+    public void remove() {
 	if (npc != null) {
 	    npc.removeFromWorld();
 	}
@@ -162,7 +153,7 @@ public class Clone {
 	ytrans = 0;
 	ztrans = 0;
 	rotation = 0;
-	mirror = direction.none;
+	mirror = Direction.NONE;
 	xstart = 0;
 	ystart = 0;
 	zstart = 0;
@@ -172,7 +163,7 @@ public class Clone {
 	npc = null;
     }
 
-    public void Move(Location playerlocation) {
+    public void move(Location playerlocation) {
 	if (npc != null) {
 	    Location newloc = getNewLocation(playerlocation);
 
@@ -201,10 +192,10 @@ public class Clone {
 	    location.setZ(z);
 	}
 
-	if (mirror == direction.east || mirror == direction.west) {
+	if (mirror == Direction.EAST || mirror == Direction.WEST) {
 	    location.setZ(-location.getZ());
 	    location.setYaw(180 - (oldlocation.getYaw() + rotation));
-	} else if (mirror == direction.north || mirror == direction.south) {
+	} else if (mirror == Direction.NORTH || mirror == Direction.SOUTH) {
 	    location.setX(-location.getX());
 	    location.setYaw(360 - (oldlocation.getYaw() + rotation));
 	} else {
@@ -260,9 +251,9 @@ public class Clone {
 	    location.setZ(z);
 	}
 
-	if (mirror == direction.east || mirror == direction.west) {
+	if (mirror == Direction.EAST || mirror == Direction.WEST) {
 	    location.setZ(-location.getBlockZ());
-	} else if (mirror == direction.north || mirror == direction.south) {
+	} else if (mirror == Direction.NORTH || mirror == Direction.SOUTH) {
 	    location.setX(-location.getBlockX());
 	}
 
@@ -276,19 +267,19 @@ public class Clone {
 	Material mat = oldblock.getType();
 
 	if (rotation == 90) {
-	    data = rotatedata(1, mat, data);
+	    data = rotateData(1, mat, data);
 	} else if (rotation == 180) {
-	    data = rotatedata(2, mat, data);
+	    data = rotateData(2, mat, data);
 	} else if (rotation == 270) {
-	    data = rotatedata(3, mat, data);
+	    data = rotateData(3, mat, data);
 	}
 
-	data = mirrordata(mat, data);
+	data = mirrorData(mat, data);
 
 	return data;
     }
 
-    public byte rotatedata(int rotation, Material mat, byte data) {
+    public byte rotateData(int rotation, Material mat, byte data) {
 	// Some of this code is inspired by worldedit's source
 	// https://github.com/sk89q/worldedit/blob/master/src/main/java/com/sk89q/worldedit/blocks/BlockData.java
 	for (int ctr = 0; ctr < rotation; ctr++) {
@@ -573,7 +564,7 @@ public class Clone {
 	return data;
     }
 
-    public byte mirrordata(Material mat, byte data) {
+    public byte mirrorData(Material mat, byte data) {
 	// Some of this code is inspired by worldedit's source
 	// https://github.com/sk89q/worldedit/blob/master/src/main/java/com/sk89q/worldedit/blocks/BlockData.java
 	switch (mat) {
@@ -584,19 +575,19 @@ public class Clone {
 	case SMOOTH_STAIRS:
 	    switch (data) {
 	    case 0:
-		if (mirror == direction.north)
+		if (mirror == Direction.NORTH)
 		    data = 1;
 		break;
 	    case 1:
-		if (mirror == direction.north)
+		if (mirror == Direction.NORTH)
 		    data = 0;
 		break;
 	    case 2:
-		if (mirror == direction.east)
+		if (mirror == Direction.EAST)
 		    data = 3;
 		break;
 	    case 3:
-		if (mirror == direction.east)
+		if (mirror == Direction.EAST)
 		    data = 2;
 		break;
 	    }
@@ -609,19 +600,19 @@ public class Clone {
 	case DISPENSER:
 	    switch (data) {
 	    case 2:
-		if (mirror == direction.east)
+		if (mirror == Direction.EAST)
 		    data = 3;
 		break;
 	    case 3:
-		if (mirror == direction.east)
+		if (mirror == Direction.EAST)
 		    data = 2;
 		break;
 	    case 4:
-		if (mirror == direction.north)
+		if (mirror == Direction.NORTH)
 		    data = 5;
 		break;
 	    case 5:
-		if (mirror == direction.north)
+		if (mirror == Direction.NORTH)
 		    data = 4;
 		break;
 	    }
@@ -631,19 +622,19 @@ public class Clone {
 	case REDSTONE_TORCH_OFF:
 	    switch (data) {
 	    case 1:
-		if (mirror == direction.east)
+		if (mirror == Direction.EAST)
 		    data = 2;
 		break;
 	    case 2:
-		if (mirror == direction.east)
+		if (mirror == Direction.EAST)
 		    data = 1;
 		break;
 	    case 3:
-		if (mirror == direction.north)
+		if (mirror == Direction.NORTH)
 		    data = 4;
 		break;
 	    case 4:
-		if (mirror == direction.north)
+		if (mirror == Direction.NORTH)
 		    data = 3;
 		break;
 	    }
@@ -651,19 +642,19 @@ public class Clone {
 	case RAILS:
 	    switch (data) {
 	    case 6:
-		if (mirror == direction.east)
+		if (mirror == Direction.EAST)
 		    data = 8;
 		break;
 	    case 8:
-		if (mirror == direction.east)
+		if (mirror == Direction.EAST)
 		    data = 6;
 		break;
 	    case 7:
-		if (mirror == direction.north)
+		if (mirror == Direction.NORTH)
 		    data = 9;
 		break;
 	    case 9:
-		if (mirror == direction.north)
+		if (mirror == Direction.NORTH)
 		    data = 7;
 		break;
 	    }
@@ -672,27 +663,27 @@ public class Clone {
 	case DETECTOR_RAIL:
 	    switch (data & 0x7) {
 	    case 0:
-		if (mirror == direction.east)
+		if (mirror == Direction.EAST)
 		    data = (byte) (1 | (data & ~0x7));
 		break;
 	    case 1:
-		if (mirror == direction.east)
+		if (mirror == Direction.EAST)
 		    data = (byte) (0 | (data & ~0x7));
 		break;
 	    case 2:
-		if (mirror == direction.east)
+		if (mirror == Direction.EAST)
 		    data = (byte) (3 | (data & ~0x7));
 		break;
 	    case 3:
-		if (mirror == direction.east)
+		if (mirror == Direction.EAST)
 		    data = (byte) (2 | (data & ~0x7));
 		break;
 	    case 4:
-		if (mirror == direction.north)
+		if (mirror == Direction.NORTH)
 		    data = (byte) (5 | (data & ~0x7));
 		break;
 	    case 5:
-		if (mirror == direction.north)
+		if (mirror == Direction.NORTH)
 		    data = (byte) (4 | (data & ~0x7));
 		break;
 	    }
@@ -702,27 +693,27 @@ public class Clone {
 	    int lwithoutthrown = data & ~0x8;
 	    switch (lwithoutthrown) {
 	    case 1:
-		if (mirror == direction.north)
+		if (mirror == Direction.NORTH)
 		    data = (byte) (2 | lthrown);
 		break;
 	    case 2:
-		if (mirror == direction.north)
+		if (mirror == Direction.NORTH)
 		    data = (byte) (1 | lthrown);
 		break;
 	    case 3:
-		if (mirror == direction.east)
+		if (mirror == Direction.EAST)
 		    data = (byte) (4 | lthrown);
 		break;
 	    case 4:
-		if (mirror == direction.east)
+		if (mirror == Direction.EAST)
 		    data = (byte) (3 | lthrown);
 		break;
 	    case 5:
-		if (mirror == direction.north)
+		if (mirror == Direction.NORTH)
 		    data = (byte) (5 | lthrown);
 		break;
 	    case 6:
-		if (mirror == direction.east)
+		if (mirror == Direction.EAST)
 		    data = (byte) (6 | lthrown);
 		break;
 	    }
@@ -884,7 +875,7 @@ public class Clone {
 	return data;
     }
 
-    public boolean Break(Block breakblock, Player p) {
+    public boolean breakBlock(Block breakblock, Player p) {
 	Block block = getNewBlockLocation(breakblock);
 
 	if (p.getGameMode() == GameMode.SURVIVAL) {
@@ -899,7 +890,7 @@ public class Clone {
 	return true;
     }
 
-    public boolean Place(Block placeblock, Player p) {
+    public boolean placeBlock(Block placeblock, Player p) {
 	if (p.getGameMode() == GameMode.SURVIVAL) {
 	    boolean found = false;
 
@@ -928,7 +919,7 @@ public class Clone {
 	return true;
     }
 
-    public void ItemInHand(ItemStack is) {
+    public void setIteMinHand(ItemStack is) {
 	if (npc != null) {
 	    if (is.getAmount() == 0) {
 		((NPCHuman) npc.getEntity()).getPlayer().setItemInHand(null);
@@ -939,26 +930,26 @@ public class Clone {
 	}
     }
 
-    public void Sneak(boolean sneak) {
+    public void setSneaking(boolean sneak) {
 	if (npc != null) {
 	    ((HumanNPC) npc).setSneaking(sneak);
 	}
     }
 
-    public void Swing() {
+    public void doArmSwing() {
 	if (npc != null) {
 	    ((HumanNPC) npc).animateArmSwing();
 	}
     }
 
-    public Packet20NamedEntitySpawn packetMaker() {
-	return packetMaker(name);
+    public Packet20NamedEntitySpawn makeNamedEntitySpawnPacket() {
+	return makeNamedEntitySpawnPacket(name);
     }
 
     // Copied from ModDisguise by desmin88
     // See:
     // https://github.com/desmin88/MobDisguise/blob/master/src/me/desmin88/mobdisguise/utils/PacketUtils.java
-    public Packet20NamedEntitySpawn packetMaker(String Name) {
+    public Packet20NamedEntitySpawn makeNamedEntitySpawnPacket(String Name) {
 	Location loc = npc.getLocation();
 	Packet20NamedEntitySpawn packet = new Packet20NamedEntitySpawn();
 	packet.a = npc.getEntityId();

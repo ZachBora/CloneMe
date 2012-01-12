@@ -67,7 +67,7 @@ public class ScheduledBlockChange implements Runnable {
 
 	    plugin.getServer().getPluginManager().callEvent(breakevent);
 
-	    if (breakevent.isCancelled() || !c.Break(b, p)) {
+	    if (breakevent.isCancelled() || !c.breakBlock(b, p)) {
 		p.sendMessage(ChatColor.RED + "Clone could not break block");
 	    }
 
@@ -91,7 +91,7 @@ public class ScheduledBlockChange implements Runnable {
 	    plugin.getServer().getPluginManager().callEvent(placeevent);
 
 	    if (!placeevent.canBuild() || placeevent.isCancelled()
-		    || !c.Place(b, p)) {
+		    || !c.placeBlock(b, p)) {
 		p.sendMessage(ChatColor.RED + "Clone could not place block");
 	    }
 
