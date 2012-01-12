@@ -22,103 +22,100 @@ import com.worldcretornica.cloneme.events.ClonePlayerInteractEvent;
 
 public class ClonePlayerListener extends PlayerListener {
 
-    private CloneMe plugin;
+	private CloneMe plugin;
 
-    public ClonePlayerListener(CloneMe plugin) {
-	this.plugin = plugin;
-    }
+	public ClonePlayerListener(CloneMe plugin) {
+		this.plugin = plugin;
+	}
 
-    @Override
-    public void onPlayerInteract(PlayerInteractEvent event) {
-	if (event.isCancelled())
-	    return;
+	@Override
+	public void onPlayerInteract(PlayerInteractEvent event) {
+		if (event.isCancelled())
+			return;
 
-	if (!(event instanceof ClonePlayerInteractEvent)) {
-	    Player p = event.getPlayer();
+		if (!(event instanceof ClonePlayerInteractEvent)) {
+			Player p = event.getPlayer();
 
-	    Set<Clone> clones = plugin.getCloneManager().getClones(p);
-	    if (clones != null && clones.size() != 0) {
-		for (Clone clone : clones) {
-		    plugin.schedule(
-			    new ScheduledBlockChange(clone, plugin, p, event
-				    .getClickedBlock(), ChangeType.INTERACT,
-				    event), 1);
+			Set<Clone> clones = plugin.getCloneManager().getClones(p);
+			if (clones != null && clones.size() != 0) {
+				for (Clone clone : clones) {
+					plugin.schedule(new ScheduledBlockChange(clone, plugin, p, event.getClickedBlock(), ChangeType.INTERACT, event), 1);
+				}
+			}
 		}
-	    }
 	}
-    }
 
-    @Override
-    public void onPlayerJoin(PlayerJoinEvent event) {
+	@Override
+	public void onPlayerJoin(PlayerJoinEvent event) {
 
-    }
-
-    @Override
-    public void onPlayerMove(PlayerMoveEvent event) {
-	if (event.isCancelled())
-	    return;
-
-	Location loc = event.getTo();
-	Player p = event.getPlayer();
-
-	Set<Clone> clones = plugin.getCloneManager().getClones(p);
-	if (clones != null && loc != null && clones.size() != 0) {
-	    for (Clone clone : clones) {
-		clone.move(loc);
-	    }
 	}
-    }
 
-    @Override
-    public void onPlayerQuit(PlayerQuitEvent event) {
+	@Override
+	public void onPlayerMove(PlayerMoveEvent event) {
+		if (event.isCancelled())
+			return;
 
-    }
+		Location loc = event.getTo();
+		Player p = event.getPlayer();
 
-    @Override
-    public void onPlayerToggleSneak(PlayerToggleSneakEvent event) {
-	if (event.isCancelled())
-	    return;
-
-	Player p = event.getPlayer();
-	boolean sneaking = event.isSneaking();
-
-	Set<Clone> clones = plugin.getCloneManager().getClones(p);
-	if (clones != null && clones.size() != 0) {
-	    for (Clone clone : clones) {
-		clone.setSneaking(sneaking);
-	    }
-	}
-    }
-
-    @Override
-    public void onPlayerAnimation(PlayerAnimationEvent event) {
-	if (event.isCancelled())
-	    return;
-
-	if (event.getAnimationType() == PlayerAnimationType.ARM_SWING) {
-	    Player p = event.getPlayer();
-
-	    Set<Clone> clones = plugin.getCloneManager().getClones(p);
-	    if (clones != null && clones.size() != 0) {
-		for (Clone clone : clones) {
-		    clone.doArmSwing();
+		Set<Clone> clones = plugin.getCloneManager().getClones(p);
+		if (clones != null && loc != null && clones.size() != 0) {
+			for (Clone clone : clones) {
+				clone.move(loc);
+			}
 		}
-	    }
 	}
-    }
 
-    @Override
-    public void onItemHeldChange(PlayerItemHeldEvent event) {
+	@Override
+	public void onPlayerQuit(PlayerQuitEvent event) {
 
-	Player p = event.getPlayer();
-	ItemStack is = p.getInventory().getItem(event.getNewSlot());
-
-	Set<Clone> clones = plugin.getCloneManager().getClones(p);
-	if (clones != null && clones.size() != 0) {
-	    for (Clone clone : clones) {
-		clone.setItemInHand(is);
-	    }
 	}
-    }
+
+	@Override
+	public void onPlayerToggleSneak(PlayerToggleSneakEvent event) {
+		if (event.isCancelled())
+			return;
+
+		Player p = event.getPlayer();
+		boolean sneaking = event.isSneaking();
+
+		Set<Clone> clones = plugin.getCloneManager().getClones(p);
+		if (clones != null && clones.size() != 0) {
+			for (Clone clone : clones) {
+				clone.setSneaking(sneaking);
+			}
+		}
+	}
+
+	@Override
+	public void onPlayerAnimation(PlayerAnimationEvent event) {
+		if (event.isCancelled())
+			return;
+
+		if (event.getAnimationType() == PlayerAnimationType.ARM_SWING) {
+			Player p = event.getPlayer();
+
+			Set<Clone> clones = plugin.getCloneManager().getClones(p);
+			if (clones != null && clones.size() != 0) {
+				for (Clone clone : clones) {
+					clone.doArmSwing();
+				}
+			}
+		}
+	}
+
+	@Override
+	public void onItemHeldChange(PlayerItemHeldEvent event) {
+
+		Player p = event.getPlayer();
+		ItemStack is = p.getInventory().getItem(event.getNewSlot());
+
+		Set<Clone> clones = plugin.getCloneManager().getClones(p);
+		if (clones != null && clones.size() != 0) {
+			for (Clone clone : clones) {
+				clone.setItemInHand(is);
+			}
+		}
+	}
 
 }

@@ -9,13 +9,12 @@ import org.bukkit.inventory.ItemStack;
 
 public class ClonePlayerInteractEvent extends PlayerInteractEvent {
 
-    /**
+	/**
 	 * 
 	 */
-    private static final long serialVersionUID = 3868388333255631567L;
+	private static final long serialVersionUID = 3868388333255631567L;
 
-    public ClonePlayerInteractEvent(Player who, Action action, ItemStack item,
-	    Block clickedBlock, BlockFace clickedFace) {
-	super(who, action, item, clickedBlock, clickedFace);
-    }
+	public ClonePlayerInteractEvent(Player who, Action action, ItemStack item, Block clickedBlock, BlockFace clickedFace) {
+		super(who, action, item, clickedBlock, clickedFace);
+	}
 }

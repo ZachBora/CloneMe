@@ -14,104 +14,92 @@ import com.worldcretornica.cloneme.events.CloneBlockPlaceEvent;
 
 public class ScheduledBlockChange implements Runnable {
 
-    public enum ChangeType {
-	BLOCK_BREAK, BLOCK_PLACE, INTERACT
-    }
-
-    private Clone clone;
-    private CloneMe plugin;
-    private Block block;
-    private Player player;
-    private ChangeType change;
-    private Event event;
-
-    public ScheduledBlockChange(Clone clone, CloneMe plugin, Player player,
-	    Block block, ChangeType changes, Event event) {
-	this.clone = clone;
-	this.plugin = plugin;
-	this.player = player;
-	this.block = block;
-	this.change = changes;
-	this.event = event;
-    }
-
-    @Override
-    public void run() {
-
-	// plugin.logger.info("CloneMe PlayerData = " +
-	// e.getClickedBlock().getData());
-
-	Block newblock = clone.getNewBlockLocation(block);
-
-	switch (change) {
-	case INTERACT:
-
-	    if (newblock != null && newblock.getType() != Material.AIR) {
-		net.minecraft.server.World myworld = ((CraftWorld) block
-			.getWorld()).getHandle();
-		net.minecraft.server.EntityHuman human = ((CraftPlayer) player)
-			.getHandle();
-
-		if (myworld != null && human != null) {
-		    net.minecraft.server.Block.byId[newblock.getTypeId()]
-			    .interact(myworld, newblock.getX(),
-				    newblock.getY(), newblock.getZ(), human);
-		}
-	    }
-	    break;
-	case BLOCK_BREAK:
-
-	    CloneBlockBreakEvent breakevent = new CloneBlockBreakEvent(
-		    newblock, player);
-
-	    plugin.getServer().getPluginManager().callEvent(breakevent);
-
-	    if (breakevent.isCancelled() || !clone.breakBlock(block, player)) {
-		player.sendMessage(ChatColor.RED
-			+ "Clone could not break block");
-	    }
-
-	    break;
-	case BLOCK_PLACE:
-
-	    BlockPlaceEvent pevent = (BlockPlaceEvent) event;
-	    Block placedagainstblock = null;
-	    if (pevent.getBlockAgainst() != null)
-		placedagainstblock = pevent.getBlockAgainst();
-	    Block newplacedagainstblock = null;
-
-	    if (placedagainstblock != null)
-		newplacedagainstblock = clone.getNewBlockLocation(pevent
-			.getBlockAgainst());
-
-	    CloneBlockPlaceEvent placeevent = new CloneBlockPlaceEvent(
-		    newblock, newblock.getState(), newplacedagainstblock,
-		    pevent.getItemInHand(), player, true);
-
-	    plugin.getServer().getPluginManager().callEvent(placeevent);
-
-	    if (!placeevent.canBuild() || placeevent.isCancelled()
-		    || !clone.placeBlock(block, player)) {
-		player.sendMessage(ChatColor.RED
-			+ "Clone could not place block");
-	    }
-
-	    break;
+	public enum ChangeType {
+		BLOCK_BREAK, BLOCK_PLACE, INTERACT
 	}
 
-	// ClonePlayerInteractEvent newevent = new
-	// ClonePlayerInteractEvent(e.getPlayer(), e.getAction(),
-	// e.getPlayer().getItemInHand(), newblock,
-	// c.getnewface(e.getBlockFace()));
+	private Clone clone;
+	private CloneMe plugin;
+	private Block block;
+	private Player player;
+	private ChangeType change;
+	private Event event;
 
-	// plugin.getServer().getPluginManager().callEvent(newevent);
+	public ScheduledBlockChange(Clone clone, CloneMe plugin, Player player, Block block, ChangeType changes, Event event) {
+		this.clone = clone;
+		this.plugin = plugin;
+		this.player = player;
+		this.block = block;
+		this.change = changes;
+		this.event = event;
+	}
 
-	// if (newevent.useInteractedBlock() != Result.DENY) {
-	// }
+	@Override
+	public void run() {
 
-	/*
-	 * if(!c.Toggle(b, p)) { p.sendMessage("Clone could not place block"); }
-	 */
-    }
+		// plugin.logger.info("CloneMe PlayerData = " +
+		// e.getClickedBlock().getData());
+
+		Block newblock = clone.getNewBlockLocation(block);
+
+		switch (change) {
+		case INTERACT:
+
+			if (newblock != null && newblock.getType() != Material.AIR) {
+				net.minecraft.server.World myworld = ((CraftWorld) block.getWorld()).getHandle();
+				net.minecraft.server.EntityHuman human = ((CraftPlayer) player).getHandle();
+
+				if (myworld != null && human != null) {
+					net.minecraft.server.Block.byId[newblock.getTypeId()].interact(myworld, newblock.getX(), newblock.getY(), newblock.getZ(), human);
+				}
+			}
+			break;
+		case BLOCK_BREAK:
+
+			CloneBlockBreakEvent breakevent = new CloneBlockBreakEvent(newblock, player);
+
+			plugin.getServer().getPluginManager().callEvent(breakevent);
+
+			if (breakevent.isCancelled() || !clone.breakBlock(block, player)) {
+				player.sendMessage(ChatColor.RED + "Clone could not break block");
+			}
+
+			break;
+		case BLOCK_PLACE:
+
+			BlockPlaceEvent pevent = (BlockPlaceEvent) event;
+			Block placedagainstblock = null;
+			if (pevent.getBlockAgainst() != null)
+				placedagainstblock = pevent.getBlockAgainst();
+			Block newplacedagainstblock = null;
+
+			if (placedagainstblock != null)
+				newplacedagainstblock = clone.getNewBlockLocation(pevent.getBlockAgainst());
+
+			CloneBlockPlaceEvent placeevent = new CloneBlockPlaceEvent(newblock, newblock.getState(), newplacedagainstblock, pevent.getItemInHand(), player, true);
+
+			plugin.getServer().getPluginManager().callEvent(placeevent);
+
+			if (!placeevent.canBuild() || placeevent.isCancelled() || !clone.placeBlock(block, player)) {
+				player.sendMessage(ChatColor.RED + "Clone could not place block");
+			}
+
+			break;
+		}
+
+		// ClonePlayerInteractEvent newevent = new
+		// ClonePlayerInteractEvent(e.getPlayer(), e.getAction(),
+		// e.getPlayer().getItemInHand(), newblock,
+		// c.getnewface(e.getBlockFace()));
+
+		// plugin.getServer().getPluginManager().callEvent(newevent);
+
+		// if (newevent.useInteractedBlock() != Result.DENY) {
+		// }
+
+		/*
+		 * if(!c.Toggle(b, p)) { p.sendMessage("Clone could not place block"); }
+		 */
+	}
 
 }
