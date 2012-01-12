@@ -1,6 +1,7 @@
 name: CloneMe
 main: com.worldcretornica.cloneme.CloneMe
 version: 0.1.1
+author: ZachBora
 softdepend: [PermissionsEX, NPCCreatures]
 description: >
              Create clones to help you build
