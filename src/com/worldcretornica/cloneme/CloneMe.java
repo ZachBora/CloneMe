@@ -60,8 +60,8 @@ public class CloneMe extends JavaPlugin {
 	for (Set<Clone> clones : clonelist.values()) {
 	    for (Clone clone : clones) {
 		if (npcManager != null) {
-		    Packet29DestroyEntity p29 = new Packet29DestroyEntity(
-			    clone.getNPC().getEntityId());
+		    Packet29DestroyEntity p29 = new Packet29DestroyEntity(clone
+			    .getNPC().getEntityId());
 
 		    for (Player p : this.getServer().getOnlinePlayers()) {
 			((CraftPlayer) p).getHandle().netServerHandler
@@ -475,8 +475,7 @@ public class CloneMe extends JavaPlugin {
 	Location start = s.getLocation();
 
 	Clone clone = new Clone(s.getName(), xpos, ypos, zpos, rotation, dir,
-		start, s.getWorld(), npcManager,
-		name);
+		start, s.getWorld(), npcManager, name);
 
 	clone.setItemInHand(s.getItemInHand());
 	clone.setSneaking(s.isSneaking());
@@ -488,8 +487,8 @@ public class CloneMe extends JavaPlugin {
 
 	if (npcManager != null) {
 	    Packet20NamedEntitySpawn p20 = clone.makeNamedEntitySpawnPacket();
-	    Packet29DestroyEntity p29 = new Packet29DestroyEntity(
-		    clone.getNPC().getEntityId());
+	    Packet29DestroyEntity p29 = new Packet29DestroyEntity(clone
+		    .getNPC().getEntityId());
 
 	    for (Player p : this.getServer().getOnlinePlayers()) {
 		((CraftPlayer) p).getHandle().netServerHandler.sendPacket(p29);

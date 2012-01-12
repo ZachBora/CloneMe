@@ -7,16 +7,16 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockPlaceEvent;
 
-import com.worldcretornica.cloneme.ScheduledBlockChange.changetype;
+import com.worldcretornica.cloneme.ScheduledBlockChange.ChangeType;
 import com.worldcretornica.cloneme.events.CloneBlockBreakEvent;
 import com.worldcretornica.cloneme.events.CloneBlockPlaceEvent;
 
 public class CloneBlockListener extends BlockListener {
 
-    public static CloneMe plugin;
+    private CloneMe plugin;
 
-    public CloneBlockListener(CloneMe instance) {
-	plugin = instance;
+    public CloneBlockListener(CloneMe plugin) {
+	this.plugin = plugin;
     }
 
     @Override
@@ -31,7 +31,7 @@ public class CloneBlockListener extends BlockListener {
 	    if (clones != null && clones.size() != 0) {
 		for (Clone clone : clones) {
 		    plugin.schedule(new ScheduledBlockChange(clone, plugin, p,
-			    event.getBlock(), changetype.blockbreak, event), 1);
+			    event.getBlock(), ChangeType.BLOCK_BREAK, event), 1);
 		}
 	    }
 	}
@@ -49,7 +49,7 @@ public class CloneBlockListener extends BlockListener {
 	    if (clones != null && clones.size() != 0) {
 		for (Clone clone : clones) {
 		    plugin.schedule(new ScheduledBlockChange(clone, plugin, p,
-			    event.getBlock(), changetype.blockplace, event), 1);
+			    event.getBlock(), ChangeType.BLOCK_PLACE, event), 1);
 		}
 	    }
 	}

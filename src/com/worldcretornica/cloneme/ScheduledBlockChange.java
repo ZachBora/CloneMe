@@ -14,26 +14,25 @@ import com.worldcretornica.cloneme.events.CloneBlockPlaceEvent;
 
 public class ScheduledBlockChange implements Runnable {
 
-    enum changetype {
-	blockbreak, blockplace, interact
+    enum ChangeType {
+	BLOCK_BREAK, BLOCK_PLACE, INTERACT
     }
 
-    Clone c;
-    public static CloneMe plugin;
-    Block b;
-    Player p;
-    changetype change;
-    Event event;
+    private Clone clone;
+    private CloneMe plugin;
+    private Block block;
+    private Player player;
+    private ChangeType change;
+    private Event event;
 
-    public ScheduledBlockChange(final Clone clone, final CloneMe instance,
-	    final Player player, final Block block, changetype changes,
-	    Event eevent) {
-	c = clone;
-	plugin = instance;
-	p = player;
-	b = block;
-	change = changes;
-	event = eevent;
+    public ScheduledBlockChange(Clone clone, CloneMe plugin, Player player,
+	    Block block, ChangeType changes, Event event) {
+	this.clone = clone;
+	this.plugin = plugin;
+	this.player = player;
+	this.block = block;
+	this.change = changes;
+	this.event = event;
     }
 
     @Override
@@ -42,15 +41,15 @@ public class ScheduledBlockChange implements Runnable {
 	// plugin.logger.info("CloneMe PlayerData = " +
 	// e.getClickedBlock().getData());
 
-	Block newblock = c.getNewBlockLocation(b);
+	Block newblock = clone.getNewBlockLocation(block);
 
 	switch (change) {
-	case interact:
+	case INTERACT:
 
 	    if (newblock != null && newblock.getType() != Material.AIR) {
-		net.minecraft.server.World myworld = ((CraftWorld) b.getWorld())
-			.getHandle();
-		net.minecraft.server.EntityHuman human = ((CraftPlayer) p)
+		net.minecraft.server.World myworld = ((CraftWorld) block
+			.getWorld()).getHandle();
+		net.minecraft.server.EntityHuman human = ((CraftPlayer) player)
 			.getHandle();
 
 		if (myworld != null && human != null) {
@@ -60,19 +59,20 @@ public class ScheduledBlockChange implements Runnable {
 		}
 	    }
 	    break;
-	case blockbreak:
+	case BLOCK_BREAK:
 
 	    CloneBlockBreakEvent breakevent = new CloneBlockBreakEvent(
-		    newblock, p);
+		    newblock, player);
 
 	    plugin.getServer().getPluginManager().callEvent(breakevent);
 
-	    if (breakevent.isCancelled() || !c.breakBlock(b, p)) {
-		p.sendMessage(ChatColor.RED + "Clone could not break block");
+	    if (breakevent.isCancelled() || !clone.breakBlock(block, player)) {
+		player.sendMessage(ChatColor.RED
+			+ "Clone could not break block");
 	    }
 
 	    break;
-	case blockplace:
+	case BLOCK_PLACE:
 
 	    BlockPlaceEvent pevent = (BlockPlaceEvent) event;
 	    Block placedagainstblock = null;
@@ -81,18 +81,19 @@ public class ScheduledBlockChange implements Runnable {
 	    Block newplacedagainstblock = null;
 
 	    if (placedagainstblock != null)
-		newplacedagainstblock = c.getNewBlockLocation(pevent
+		newplacedagainstblock = clone.getNewBlockLocation(pevent
 			.getBlockAgainst());
 
 	    CloneBlockPlaceEvent placeevent = new CloneBlockPlaceEvent(
 		    newblock, newblock.getState(), newplacedagainstblock,
-		    pevent.getItemInHand(), p, true);
+		    pevent.getItemInHand(), player, true);
 
 	    plugin.getServer().getPluginManager().callEvent(placeevent);
 
 	    if (!placeevent.canBuild() || placeevent.isCancelled()
-		    || !c.placeBlock(b, p)) {
-		p.sendMessage(ChatColor.RED + "Clone could not place block");
+		    || !clone.placeBlock(block, player)) {
+		player.sendMessage(ChatColor.RED
+			+ "Clone could not place block");
 	    }
 
 	    break;

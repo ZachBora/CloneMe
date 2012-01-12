@@ -14,15 +14,15 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.ItemStack;
 
-import com.worldcretornica.cloneme.ScheduledBlockChange.changetype;
+import com.worldcretornica.cloneme.ScheduledBlockChange.ChangeType;
 import com.worldcretornica.cloneme.events.ClonePlayerInteractEvent;
 
 public class ClonePlayerListener extends PlayerListener {
 
-    public static CloneMe plugin;
+    private CloneMe plugin;
 
-    public ClonePlayerListener(CloneMe instance) {
-	plugin = instance;
+    public ClonePlayerListener(CloneMe plugin) {
+	this.plugin = plugin;
     }
 
     @Override
@@ -38,7 +38,7 @@ public class ClonePlayerListener extends PlayerListener {
 		for (Clone clone : clones) {
 		    plugin.schedule(
 			    new ScheduledBlockChange(clone, plugin, p, event
-				    .getClickedBlock(), changetype.interact,
+				    .getClickedBlock(), ChangeType.INTERACT,
 				    event), 1);
 		}
 	    }
