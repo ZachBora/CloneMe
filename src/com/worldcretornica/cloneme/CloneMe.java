@@ -1,24 +1,17 @@
 package com.worldcretornica.cloneme;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import ru.tehkode.permissions.PermissionManager;
-import ru.tehkode.permissions.bukkit.PermissionsEx;
-import tk.npccreatures.NPCCreatures;
-import tk.npccreatures.npcs.NPCManager;
-
-import com.nijiko.permissions.PermissionHandler;
-import com.nijikokun.bukkit.Permissions.Permissions;
 import com.worldcretornica.cloneme.commands.CMCommand;
 import com.worldcretornica.cloneme.listeners.CloneBlockListener;
 import com.worldcretornica.cloneme.listeners.ClonePlayerListener;
+import com.worldcretornica.cloneme.listeners.NPCClonePlayerListener;
 
 public class CloneMe extends JavaPlugin {
 
@@ -27,27 +20,20 @@ public class CloneMe extends JavaPlugin {
 	public static String PREFIX;
 	public static String VERSION;
 
-	private final ClonePlayerListener cloneplayerlistener = new ClonePlayerListener(this);
-	private final CloneBlockListener cloneblocklistener = new CloneBlockListener(this);
-
 	public final Logger logger = Logger.getLogger("Minecraft"); // TODO
-
-	// Permissions
-	private PermissionHandler permissions;
-	private PermissionManager permpex;
-
+	
 	// NPC!
-	private NPCManager npcManager;
+	//private NPCManager npcManager;
 
 	private CloneManager cloneManager;
 
 	public boolean usingNPC;
-
+	
+	public Map<String, Integer> toBeRemoved = null;
+		
 	@Override
 	public void onDisable() {
 		cloneManager.removeAllClones();
-
-		this.logger.info(PREFIX + " disabled.");
 	}
 
 	@Override
@@ -59,23 +45,12 @@ public class CloneMe extends JavaPlugin {
 		VERSION = pdfFile.getVersion();
 		
 		cloneManager = new CloneManager(this);
-
-		PluginManager pm = getServer().getPluginManager();
-		pm.registerEvent(Event.Type.PLAYER_QUIT, this.cloneplayerlistener, Event.Priority.Normal, this);
-		pm.registerEvent(Event.Type.PLAYER_JOIN, this.cloneplayerlistener, Event.Priority.Normal, this);
-		pm.registerEvent(Event.Type.PLAYER_INTERACT, this.cloneplayerlistener, Event.Priority.Low, this);
-		pm.registerEvent(Event.Type.BLOCK_DAMAGE, this.cloneblocklistener, Event.Priority.Normal, this);
-		pm.registerEvent(Event.Type.BLOCK_PLACE, this.cloneblocklistener, Event.Priority.Low, this);
-		pm.registerEvent(Event.Type.BLOCK_BREAK, this.cloneblocklistener, Event.Priority.Low, this);
-
-		setupPermissions();
-
-		if (getServer().getPluginManager().isPluginEnabled("NPCCreatures")) {
-			pm.registerEvent(Event.Type.PLAYER_MOVE, this.cloneplayerlistener, Event.Priority.Normal, this);
-			pm.registerEvent(Event.Type.PLAYER_TOGGLE_SNEAK, this.cloneplayerlistener, Event.Priority.Normal, this);
-			pm.registerEvent(Event.Type.PLAYER_ITEM_HELD, this.cloneplayerlistener, Event.Priority.Normal, this);
-			pm.registerEvent(Event.Type.PLAYER_ANIMATION, this.cloneplayerlistener, Event.Priority.Normal, this);
-
+		getServer().getPluginManager().registerEvents(new CloneBlockListener(this), this);
+		getServer().getPluginManager().registerEvents(new ClonePlayerListener(this), this);
+		getServer().getPluginManager().registerEvents(new NPCClonePlayerListener(this), this);
+		
+		/*if (getServer().getPluginManager().isPluginEnabled("NPCCreatures")) {
+			
 			Plugin npccreature = getServer().getPluginManager().getPlugin("NPCCreatures");
 
 			npcManager = ((NPCCreatures) npccreature).getNPCManager();
@@ -86,16 +61,16 @@ public class CloneMe extends JavaPlugin {
 		} else {
 			npcManager = null;
 			this.logger.info(PREFIX + "Could not find NPCCreatures, clones will not be visible!");
-		}
-
+		}*/
+					
 		getCommand("cloneme").setExecutor(new CMCommand(this));
-
-		this.logger.info(PREFIX + " v" + VERSION + " enabled");
+		
+		toBeRemoved = new HashMap<String, Integer>();
 	}
 
-	public NPCManager getNPCManager() {
+	/*public NPCManager getNPCManager() {
 		return npcManager;
-	}
+	}*/
 
 	public CloneManager getCloneManager() {
 		return cloneManager;
@@ -131,47 +106,9 @@ public class CloneMe extends JavaPlugin {
 	 * return direction.none; }
 	 */
 
-	private void setupPermissions() {
-		if (permissions != null)
-			return;
-
-		Plugin permTest = this.getServer().getPluginManager().getPlugin("Permissions");
-		Plugin pexTest = this.getServer().getPluginManager().getPlugin("PermissionsEx");
-
-		// Check to see if Permissions exists
-		if (pexTest != null) {
-			// We're using Permissions
-			permpex = PermissionsEx.getPermissionManager();
-			// Check for Permissions 3
-			logger.info(PREFIX + " PermissionsEx " + pexTest.getDescription().getVersion() + " found");
-			return;
-		} else if (permTest == null) {
-			logger.info(PREFIX + " Permissions not found, using SuperPerms");
-			return;
-		}
-		// Check if it's a bridge
-		if (permTest.getDescription().getVersion().startsWith("2.7.7")) {
-			logger.info(PREFIX + " Found Permissions Bridge. Using SuperPerms");
-			return;
-		}
-
-		// We're using Permissions
-		permissions = ((Permissions) permTest).getHandler();
-		// Check for Permissions 3
-		logger.info(PREFIX + " Permissions " + permTest.getDescription().getVersion() + " found");
-	}
 
 	public boolean checkPermissions(Player player, String node) {
-		// Permissions
-		if (this.permissions != null) {
-			if (this.permissions.has(player, node))
-				return true;
-			// Pex
-		} else if (this.permpex != null) {
-			if (this.permpex.has(player, node))
-				return true;
-			// SuperPerms
-		} else if (player.hasPermission(node) || player.hasPermission(NAME + ".*") || player.hasPermission("*")) {
+		if (player.hasPermission(node) || player.hasPermission(NAME + ".*") || player.hasPermission("*")) {
 			return true;
 		} else if (player.isOp()) {
 			return true;

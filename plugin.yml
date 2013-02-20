@@ -1,32 +1,67 @@
 name: CloneMe
 main: com.worldcretornica.cloneme.CloneMe
-version: 0.1.1
+version: '0.7'
 author: ZachBora
-softdepend: [PermissionsEX, NPCCreatures]
+website: http://dev.bukkit.org/server-mods/cloneme/
+depend: [Citizens]
 description: >
              Create clones to help you build
 commands:
     cloneme:
         description: List cloning commands
-        usage: cloneme
+        usage: /cloneme
+        permission: CloneMe.use
+        permission-message: You do not have permission to use Clones
+        aliases: [clone,c]
     cloneme stop [player]:
         description: Removes your clones or someone else's
-        usage: cloneme stop [player]
+        usage: /cloneme stop [player]
+        permission: CloneMe.use
+        permission-message: You do not have permission to use Clones
     cloneme stopall:
         description: Removes every clones
-        usage: cloneme stopall
+        usage: /cloneme stopall
+        permission: CloneMe.use
+        permission-message: You do not have permission to use Clones
     cloneme reload:
         description: Reloads plugin
-        usage: cloneme reload
+        usage: /cloneme reload
+        permission: CloneMe.use
+        permission-message: You do not have permission to use Clones
     cloneme add:
         description: Adds a clone
-        usage: cloneme add
+        usage: /cloneme add
+        permission: CloneMe.use
+        permission-message: You do not have permission to use Clones
     cloneme modify:
         description: Modifies a clone
-        usage: cloneme modify
+        usage: /cloneme modify
+        permission: CloneMe.use
+        permission-message: You do not have permission to use Clones
     cloneme ready:
         description: Start your clones
-        usage: cloneme ready
+        usage: /cloneme ready
+        permission: CloneMe.use
+        permission-message: You do not have permission to use Clones
     cloneme pause:
         description: Pauses your clones
-        usage: cloneme pause
+        usage: /cloneme pause
+        permission: CloneMe.use
+        permission-message: You do not have permission to use Clones
+    cloneme limit:
+        description: Limit the distance of your clones
+        usage: /cloneme limit
+        permission: CloneMe.use
+        permission-message: You do not have permission to use Clones
+    cloneme players:
+        description: Lists the players with clones
+        usage: /cloneme players
+        permissions: CloneMe.use
+        permission-messahe: You do not have permission to use Clones
+        
+permissions:
+    CloneMe.*:
+        description: Allows you to use everything in the CloneMe plugin.
+    CloneMe.use:
+        description: Allows you to use Clones.
+    
