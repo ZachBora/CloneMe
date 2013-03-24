@@ -13,6 +13,9 @@ import com.worldcretornica.cloneme.listeners.CloneBlockListener;
 import com.worldcretornica.cloneme.listeners.ClonePlayerListener;
 import com.worldcretornica.cloneme.listeners.NPCClonePlayerListener;
 
+import fr.neatmonster.nocheatplus.checks.CheckType;
+import fr.neatmonster.nocheatplus.hooks.NCPExemptionManager;
+
 public class CloneMe extends JavaPlugin {
 
 	// FINAL
@@ -28,6 +31,8 @@ public class CloneMe extends JavaPlugin {
 	private CloneManager cloneManager;
 
 	public boolean usingNPC;
+	
+	public static boolean usingNCP = false;
 	
 	public Map<String, Integer> toBeRemoved = null;
 		
@@ -48,6 +53,13 @@ public class CloneMe extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new CloneBlockListener(this), this);
 		getServer().getPluginManager().registerEvents(new ClonePlayerListener(this), this);
 		getServer().getPluginManager().registerEvents(new NPCClonePlayerListener(this), this);
+		
+		
+		if(getServer().getPluginManager().isPluginEnabled("NoCheatPlus"))
+		{
+			logger.info(PREFIX + " NoCheatPlus detected, hooking");
+			usingNCP = true;
+		}
 		
 		/*if (getServer().getPluginManager().isPluginEnabled("NPCCreatures")) {
 			
@@ -114,5 +126,20 @@ public class CloneMe extends JavaPlugin {
 			return true;
 		}
 		return false;
+	}
+	
+	public static void ncpExempt(Player player, CheckType checktype)
+	{
+		NCPExemptionManager.exemptPermanently(player, checktype);
+	}
+	
+	public static void ncpUnexempt(Player player, CheckType checktype)
+	{
+		NCPExemptionManager.unexempt(player, checktype);
+	}
+	
+	public static boolean isncpExempt(Player player, CheckType checktype)
+	{
+		return NCPExemptionManager.isExempted(player, checktype);
 	}
 }

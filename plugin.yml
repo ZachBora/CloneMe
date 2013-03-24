@@ -1,9 +1,10 @@
 name: CloneMe
 main: com.worldcretornica.cloneme.CloneMe
-version: '0.7'
+version: '0.11'
 author: ZachBora
 website: http://dev.bukkit.org/server-mods/cloneme/
 depend: [Citizens]
+softdepend: [NoCheatPlus]
 description: >
              Create clones to help you build
 commands:

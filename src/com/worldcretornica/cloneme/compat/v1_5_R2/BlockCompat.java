@@ -1,28 +1,31 @@
-package com.worldcretornica.cloneme.compat.v1_4_R1;
+package com.worldcretornica.cloneme.compat.v1_5_R2;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Hanging;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Painting;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.ItemFrame;
 
 import com.worldcretornica.cloneme.CloneMe;
 import com.worldcretornica.cloneme.compat.IBlockCompat;
 
 import fr.neatmonster.nocheatplus.checks.CheckType;
 
+import net.minecraft.server.v1_5_R2.*;
+import org.bukkit.craftbukkit.v1_5_R2.*;
+import org.bukkit.craftbukkit.v1_5_R2.entity.*;
+
 public class BlockCompat implements IBlockCompat
 {
-	public boolean interact(Block block, Player player)
+	public boolean interact(org.bukkit.block.Block block, Player player)
 	{		
 		if (block != null && block.getType() != Material.AIR) 
 		{					
-			net.minecraft.server.v1_4_R1.World myworld = ((org.bukkit.craftbukkit.v1_4_R1.CraftWorld) block.getWorld()).getHandle();
-			net.minecraft.server.v1_4_R1.EntityHuman human = ((org.bukkit.craftbukkit.v1_4_R1.entity.CraftPlayer) player).getHandle();
+			World myworld = ((CraftWorld) block.getWorld()).getHandle();
+			EntityHuman human = ((CraftPlayer) player).getHandle();
 
 			if (myworld != null && human != null) 
 			{
@@ -37,7 +40,7 @@ public class BlockCompat implements IBlockCompat
 						CloneMe.ncpExempt(player, CheckType.ALL);
 				}
 				
-				result = net.minecraft.server.v1_4_R1.Block.byId[block.getTypeId()].interact(myworld, block.getX(), block.getY(), block.getZ(), human, 0, 0, 0, 0);
+				result = Block.byId[block.getTypeId()].interact(myworld, block.getX(), block.getY(), block.getZ(), human, 0, 0, 0, 0);
 				
 				if(CloneMe.usingNCP)
 				{
@@ -55,7 +58,7 @@ public class BlockCompat implements IBlockCompat
 		return false;
 	}
 	
-	public Hanging placehanging(Hanging entity, World world, int x, int y, int z, BlockFace blockface) 
+	public Hanging placehanging(Hanging entity, org.bukkit.World world, int x, int y, int z, BlockFace blockface) 
 	{
 		int dir;
         switch (blockface) 
@@ -67,21 +70,21 @@ public class BlockCompat implements IBlockCompat
 	        case EAST: dir = 3; break;
         }
 		
-        net.minecraft.server.v1_4_R1.WorldServer w = ((org.bukkit.craftbukkit.v1_4_R1.CraftWorld) world).getHandle();
-        net.minecraft.server.v1_4_R1.Entity newentity = null;
+        WorldServer w = ((CraftWorld) world).getHandle();
+        Entity newentity = null;
         
-        if (org.bukkit.entity.Painting.class.isAssignableFrom(entity.getClass())) 
+        if (Painting.class.isAssignableFrom(entity.getClass())) 
         {
-        	newentity = new net.minecraft.server.v1_4_R1.EntityPainting(w, (int) x, (int) y, (int) z, dir);
+        	newentity = new EntityPainting(w, (int) x, (int) y, (int) z, dir);
         	Painting newpaint = (Painting) newentity.getBukkitEntity();
         	newpaint.setArt(((Painting) entity).getArt());
         } 
-        else if (org.bukkit.entity.ItemFrame.class.isAssignableFrom(entity.getClass())) 
+        else if (ItemFrame.class.isAssignableFrom(entity.getClass())) 
         {
-        	newentity = new net.minecraft.server.v1_4_R1.EntityItemFrame(w, (int) x, (int) y, (int) z, dir);
+        	newentity = new EntityItemFrame(w, (int) x, (int) y, (int) z, dir);
         }
 
-        if (newentity != null && !((net.minecraft.server.v1_4_R1.EntityHanging) newentity).survives()) 
+        if (newentity != null && !((EntityHanging) newentity).survives()) 
         {
         	newentity = null;
         }
@@ -93,7 +96,7 @@ public class BlockCompat implements IBlockCompat
 
 	public void setYaw(LivingEntity entity, Location loc) 
 	{
-		net.minecraft.server.v1_4_R1.EntityLiving el = ((org.bukkit.craftbukkit.v1_4_R1.entity.CraftLivingEntity) entity).getHandle();
+		EntityLiving el = ((CraftLivingEntity) entity).getHandle();
 		
 		//el.yaw = (float)(loc.getYaw());
 		el.yaw = (float)(loc.getYaw());

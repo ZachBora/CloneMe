@@ -12,6 +12,8 @@ import com.worldcretornica.cloneme.Clone.Direction;
 import com.worldcretornica.cloneme.CloneMe;
 import com.worldcretornica.cloneme.ClonedPlayer;
 
+import fr.neatmonster.nocheatplus.checks.CheckType;
+
 import java.util.List;
 import java.util.Map;
 
@@ -85,7 +87,9 @@ public class CMCommand implements CommandExecutor {
 		else 
 		{
 			if(pl != null)
+			{
 				plugin.getCloneManager().removeClones(pl);
+			}
 			
 			if(opl != null)
 				plugin.getCloneManager().removeClones(opl);
@@ -321,6 +325,15 @@ public class CMCommand implements CommandExecutor {
 			if (nbparam > 0) {
 				plugin.getCloneManager().spawnClone((Player) s, xpos, ypos, zpos, rotation, dir, name);
 
+				if(plugin.usingNPC)
+				{
+					CloneMe.ncpExempt((Player) s, CheckType.ALL);
+					CloneMe.ncpExempt((Player) s, CheckType.BLOCKPLACE);
+					CloneMe.ncpExempt((Player) s, CheckType.BLOCKPLACE_AGAINST);
+					CloneMe.ncpExempt((Player) s, CheckType.BLOCKPLACE_FASTPLACE);
+					CloneMe.ncpExempt((Player) s, CheckType.BLOCKBREAK_WRONGBLOCK);
+				}
+				
 				s.sendMessage("Clone added!");
 			} else {
 				s.sendMessage(ChatColor.RED + CloneMe.PREFIX + " Error : You must at least put one of these: r: x: y: z: m: ");

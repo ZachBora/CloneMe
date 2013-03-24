@@ -34,7 +34,8 @@ public class Clone {
 
 	public final Logger logger = Logger.getLogger("Minecraft"); // TODO
 
-	public enum Direction {
+	public enum Direction 
+	{
 		NONE, EAST, WEST, SOUTH, NORTH,
 		/*
 		 * NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST
@@ -90,6 +91,8 @@ public class Clone {
 		
 		((Player) npc.getBukkitEntity()).setGameMode(Bukkit.getPlayer(owner).getGameMode());
 		
+		copyEquipment();
+		
 		final String packageName = Bukkit.getServer().getClass().getPackage().getName();
 		String cbversion = packageName.substring(packageName.lastIndexOf('.') + 1);
 		if (cbversion.equals("craftbukkit")) 
@@ -125,11 +128,69 @@ public class Clone {
 		}*/
 	}
 	
+	public void copyEquipment()
+	{
+		Player powner = Bukkit.getPlayerExact(owner);
+		Player pclone = (Player) npc.getBukkitEntity();
+		
+		ItemStack is = null;
+		
+		if(powner.getInventory() != null)
+		{
+			if(powner.getInventory().getBoots() != null)
+			{
+				is = powner.getInventory().getBoots().clone();
+				if(is != null)
+				{
+					is.setItemMeta(powner.getInventory().getBoots().getItemMeta().clone());
+					pclone.getInventory().setBoots(is);
+				}
+			}
+			
+			if(powner.getInventory().getChestplate() != null)
+			{
+				is = powner.getInventory().getChestplate().clone();
+				if(is != null)
+				{
+					is.setItemMeta(powner.getInventory().getChestplate().getItemMeta().clone());
+					pclone.getInventory().setChestplate(is);
+				}
+			}
+	
+			if(powner.getInventory().getHelmet() != null)
+			{
+				is = powner.getInventory().getHelmet().clone();
+				if(is != null)
+				{
+					is.setItemMeta(powner.getInventory().getHelmet().getItemMeta().clone());
+					pclone.getInventory().setHelmet(is);
+				}
+			}
+	
+			if(powner.getInventory().getLeggings() != null)
+			{
+				is = powner.getInventory().getLeggings().clone();
+				if(is != null)
+				{
+					is.setItemMeta(powner.getInventory().getLeggings().getItemMeta().clone());
+					pclone.getInventory().setLeggings(is);
+				}
+			}
+		}
+	}
+	
 	public void refresh()
 	{
 		npc.despawn();
 		npc.spawn(getNewLocation(Bukkit.getPlayer(owner).getLocation()));
-		//move();
+		
+		if (npc.getBukkitEntity() instanceof PlayerNPC) {
+			((PlayerNPC) npc.getBukkitEntity()).setGravityEnabled(false);
+		}
+		
+		((Player) npc.getBukkitEntity()).setGameMode(Bukkit.getPlayer(owner).getGameMode());
+		
+		copyEquipment();
 	}
 
 	public String getOwner() {

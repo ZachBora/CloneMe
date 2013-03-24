@@ -1,7 +1,7 @@
-package com.worldcretornica.cloneme.compat.v1_4_R1;
+package com.worldcretornica.cloneme.compat.v1_5_R2;
 
-import net.minecraft.server.v1_4_R1.*;
-import org.bukkit.craftbukkit.v1_4_R1.entity.*;
+import net.minecraft.server.v1_5_R2.*;
+import org.bukkit.craftbukkit.v1_5_R2.entity.*;
 
 import org.bukkit.Location;
 import org.bukkit.entity.HumanEntity;
@@ -13,7 +13,7 @@ public class NPC implements INPC
 	@Override
 	public void setYaw(HumanEntity entity, Location loc) 
 	{
-		((CraftHumanEntity) entity).getHandle().az = loc.getYaw();
+		((CraftHumanEntity) entity).getHandle().aA = loc.getYaw();
 	}
 
 	@Override

@@ -29,6 +29,8 @@ import com.worldcretornica.cloneme.events.ClonePlayerBucketEmptyEvent;
 import com.worldcretornica.cloneme.events.ClonePlayerBucketFillEvent;
 import com.worldcretornica.cloneme.events.ClonePlayerInteractEntityEvent;
 
+import fr.neatmonster.nocheatplus.checks.CheckType;
+
 public class ScheduledBlockChange implements Runnable {
 
 	private Clone clone;
@@ -72,6 +74,7 @@ public class ScheduledBlockChange implements Runnable {
 	public void run() {
 
 		Block newblock = null;
+		boolean alreadyexempt = false;
 		
 		if(block != null)
 			newblock = clone.getNewBlockLocation(block);
@@ -132,7 +135,25 @@ public class ScheduledBlockChange implements Runnable {
 							
 							CloneBlockPlaceEvent placeevent = new CloneBlockPlaceEvent(newplacedblock, newplacedblock.getState(), newblock, player.getItemInHand(), player, true);
 	
+							if(CloneMe.usingNCP)
+							{
+								if(CloneMe.isncpExempt(player, CheckType.ALL))
+									alreadyexempt = true;
+								else
+									CloneMe.ncpExempt(player, CheckType.ALL);
+							}
+							
 							plugin.getServer().getPluginManager().callEvent(placeevent);
+							
+							if(CloneMe.usingNCP)
+							{
+								if(!alreadyexempt)
+								{}//CloneMe.ncpUnexempt(player, CheckType.ALL);
+								else
+									alreadyexempt = false;
+									
+							}
+							
 							
 							if(placeevent.isCancelled() || !clone.placeBlock(seedblock, player)) {
 								player.sendMessage(ChatColor.RED + "Clone could not place block");
@@ -177,8 +198,25 @@ public class ScheduledBlockChange implements Runnable {
 			{
 				ClonePlayerInteractEntityEvent playerintereactentityevent = new ClonePlayerInteractEntityEvent(pieevent.getPlayer(), foundentity);
 				
+				if(CloneMe.usingNCP)
+				{
+					if(CloneMe.isncpExempt(player, CheckType.ALL))
+						alreadyexempt = true;
+					else
+						CloneMe.ncpExempt(player, CheckType.ALL);
+				}
+				
 				plugin.getServer().getPluginManager().callEvent(playerintereactentityevent);
 	
+                if(CloneMe.usingNCP)
+				{
+					if(!alreadyexempt)
+						{}//CloneMe.ncpUnexempt(player, CheckType.ALL);
+					else
+						alreadyexempt = false;
+						
+				}
+				
 				if (playerintereactentityevent.isCancelled()) {
 					player.sendMessage(ChatColor.RED + "Clone could not interact with entity");
 				}
@@ -200,7 +238,24 @@ public class ScheduledBlockChange implements Runnable {
 
 			CloneBlockBreakEvent breakevent = new CloneBlockBreakEvent(newblock, player);
 
+			if(CloneMe.usingNCP)
+			{
+				if(CloneMe.isncpExempt(player, CheckType.ALL))
+					alreadyexempt = true;
+				else
+					CloneMe.ncpExempt(player, CheckType.ALL);
+			}
+			
 			plugin.getServer().getPluginManager().callEvent(breakevent);
+			
+			if(CloneMe.usingNCP)
+			{
+				if(!alreadyexempt)
+					{}//CloneMe.ncpUnexempt(player, CheckType.ALL);
+				else
+					alreadyexempt = false;
+					
+			}
 
 			if (breakevent.isCancelled() || !clone.breakBlock(block, player)) {
 				player.sendMessage(ChatColor.RED + "Clone could not break block");
@@ -220,10 +275,28 @@ public class ScheduledBlockChange implements Runnable {
 
 			CloneBlockPlaceEvent placeevent = new CloneBlockPlaceEvent(newblock, newblock.getState(), newplacedagainstblock, pevent.getItemInHand(), player, true);
 
+			if(CloneMe.usingNCP)
+			{
+				if(CloneMe.isncpExempt(player, CheckType.BLOCKPLACE))
+					alreadyexempt = true;
+				else
+					CloneMe.ncpExempt(player, CheckType.ALL);
+			}
+			
 			plugin.getServer().getPluginManager().callEvent(placeevent);
 
+			if(CloneMe.usingNCP)
+			{
+				if(!alreadyexempt)
+					{}//CloneMe.ncpUnexempt(player, CheckType.ALL);
+				else
+					alreadyexempt = false;
+					
+			}
+			
 			if (!placeevent.canBuild() || placeevent.isCancelled() || !clone.placeBlock(block, player)) {
 				player.sendMessage(ChatColor.RED + "Clone could not place block");
+				player.sendMessage(" exempt? " + CloneMe.isncpExempt(player, CheckType.BLOCKPLACE));
 			}
 
 			break;
@@ -254,8 +327,25 @@ public class ScheduledBlockChange implements Runnable {
 			
 			CloneHangingPlaceEvent hangingevent = new CloneHangingPlaceEvent(newentity, player, newhangingblock, clone.getNewBlockFace(hpevent.getBlockFace()));
 			
+			if(CloneMe.usingNCP)
+			{
+				if(CloneMe.isncpExempt(player, CheckType.ALL))
+					alreadyexempt = true;
+				else
+					CloneMe.ncpExempt(player, CheckType.ALL);
+			}
+			
 			plugin.getServer().getPluginManager().callEvent(hangingevent);
 
+			if(CloneMe.usingNCP)
+			{
+				if(!alreadyexempt)
+					{}//CloneMe.ncpUnexempt(player, CheckType.ALL);
+				else
+					alreadyexempt = false;
+					
+			}
+			
 			if (hangingevent.isCancelled()) 
 			{
 				if (newentity != null)
@@ -300,7 +390,23 @@ public class ScheduledBlockChange implements Runnable {
 			{
 				CloneHangingBreakByEntityEvent breakhangingevent = new CloneHangingBreakByEntityEvent(foundhangingentity, hbbeevent.getRemover());
 				
+				if(CloneMe.usingNCP)
+				{
+					if(CloneMe.isncpExempt(player, CheckType.ALL))
+						alreadyexempt = true;
+					else
+						CloneMe.ncpExempt(player, CheckType.ALL);
+				}
+				
 				plugin.getServer().getPluginManager().callEvent(breakhangingevent);
+				
+				if(CloneMe.usingNCP)
+				{
+					if(!alreadyexempt)
+						{}//CloneMe.ncpUnexempt(player, CheckType.ALL);
+					else
+						alreadyexempt = false;
+				}
 	
 				if (breakhangingevent.isCancelled()) {
 					player.sendMessage(ChatColor.RED + "Clone could not break block");
@@ -329,7 +435,24 @@ public class ScheduledBlockChange implements Runnable {
 			
 			ClonePlayerBucketEmptyEvent bucketemptyevent = new ClonePlayerBucketEmptyEvent(player, newemptiedonblock, newblockface, pbeevent.getBucket(), pbeevent.getItemStack().clone());
 			
+			if(CloneMe.usingNCP)
+			{
+				if(CloneMe.isncpExempt(player, CheckType.ALL))
+					alreadyexempt = true;
+				else
+					CloneMe.ncpExempt(player, CheckType.ALL);
+			}
+			
 			plugin.getServer().getPluginManager().callEvent(bucketemptyevent);
+			
+			if(CloneMe.usingNCP)
+			{
+				if(!alreadyexempt)
+					{}//CloneMe.ncpUnexempt(player, CheckType.ALL);
+				else
+					alreadyexempt = false;
+					
+			}
 			
 			block = emptiedonblock.getRelative(pbeevent.getBlockFace());
 						
@@ -356,7 +479,24 @@ public class ScheduledBlockChange implements Runnable {
 			
 			ClonePlayerBucketFillEvent bucketfillevent = new ClonePlayerBucketFillEvent(player, newfillingblock, newfilledblockface, bfevent.getBucket(), bfevent.getItemStack().clone());
 			
+			if(CloneMe.usingNCP)
+			{
+				if(CloneMe.isncpExempt(player, CheckType.ALL))
+					alreadyexempt = true;
+				else
+					CloneMe.ncpExempt(player, CheckType.ALL);
+			}
+			
 			plugin.getServer().getPluginManager().callEvent(bucketfillevent);
+			
+			if(CloneMe.usingNCP)
+			{
+				if(!alreadyexempt)
+					{}//CloneMe.ncpUnexempt(player, CheckType.ALL);
+				else
+					alreadyexempt = false;
+					
+			}
 			
 			block = fillingblock.getRelative(bfevent.getBlockFace());
 						

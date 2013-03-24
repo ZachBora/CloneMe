@@ -65,6 +65,9 @@ public class CMUtils {
 			case NORTH_WEST:
 				newface = BlockFace.NORTH_EAST;
 				break;
+			default:
+				newface = BlockFace.SOUTH;
+				break;
 			}
 		}
 
@@ -222,6 +225,8 @@ public class CMUtils {
 				newface = BlockFace.SOUTH_WEST;
 			}
 			break;
+		default:
+			break;
 		}
 
 		return newface;
@@ -258,11 +263,14 @@ public class CMUtils {
 			return lowerdata;
 	}
 	
-	public static byte rotateData(int rotation, Material mat, byte data) {
+	public static byte rotateData(int rotation, Material mat, byte data) 
+	{
 		// Some of this code is inspired by worldedit's source
 		// https://github.com/sk89q/worldedit/blob/master/src/main/java/com/sk89q/worldedit/blocks/BlockData.java
-		for (int ctr = 0; ctr < rotation; ctr++) {
-			switch (mat) {
+		for (int ctr = 0; ctr < rotation; ctr++) 
+		{
+			switch (mat) 
+			{
 			case BRICK_STAIRS:
 			case WOOD_STAIRS:
 			case COBBLESTONE_STAIRS:
@@ -272,7 +280,9 @@ public class CMUtils {
 			case SANDSTONE_STAIRS:
 			case SPRUCE_WOOD_STAIRS:
 			case JUNGLE_WOOD_STAIRS:
-				switch (data) {
+			case QUARTZ_STAIRS:
+				switch (data) 
+				{
 				case 0:
 					data = 2;
 					break;
@@ -583,6 +593,8 @@ public class CMUtils {
 					data -= 1;
 				
 				break;
+			default:
+				break;
 			}
 		}
 
@@ -683,7 +695,8 @@ public class CMUtils {
 		
 		if(mirror == Direction.NONE) return data;
 		
-		switch (mat) {
+		switch (mat) 
+		{
 		case BRICK_STAIRS:
 		case WOOD_STAIRS:
 		case COBBLESTONE_STAIRS:
@@ -693,6 +706,7 @@ public class CMUtils {
 		case SPRUCE_WOOD_STAIRS:
 		case SANDSTONE_STAIRS:
 		case JUNGLE_WOOD_STAIRS:
+		case QUARTZ_STAIRS:
 			switch (data) {
 			case 0:
 				if (mirror == Direction.EAST)
@@ -709,6 +723,22 @@ public class CMUtils {
 			case 3:
 				if (mirror == Direction.NORTH)
 					data = 2;
+				break;
+			case 4:
+				if (mirror == Direction.EAST)
+					data = 5;
+				break;
+			case 5:
+				if (mirror == Direction.EAST)
+					data = 4;
+				break;
+			case 6:
+				if (mirror == Direction.NORTH)
+					data = 7;
+				break;
+			case 7:
+				if (mirror == Direction.NORTH)
+					data = 6;
 				break;
 			}
 			break;
@@ -1168,6 +1198,8 @@ public class CMUtils {
 					data = 9; break;
 			}
 			
+			break;
+		default:
 			break;
 		}
 

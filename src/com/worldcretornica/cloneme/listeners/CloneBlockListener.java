@@ -54,7 +54,8 @@ public class CloneBlockListener implements Listener {
 
 			List<Clone> clones = plugin.getCloneManager().getClones(p);
 			if (clones != null && !plugin.getCloneManager().IsPaused(p.getName()) && clones.size() != 0) {
-				for (Clone clone : clones) {
+				for (Clone clone : clones) 
+				{
 					plugin.schedule(new ScheduledBlockChange(clone, plugin, p, event.getBlock(), ScheduledBlockChange.ChangeType.BLOCK_PLACE, event), 1);
 				}
 			}
