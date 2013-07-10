@@ -335,6 +335,9 @@ public class CMUtils {
 			case BURNING_FURNACE:
 			case DISPENSER:
 			case ENDER_CHEST:
+			case TRAPPED_CHEST:
+			case DROPPER:
+			case HOPPER:
 				switch (data) {
 				case 2:
 					data = 5;
@@ -454,7 +457,6 @@ public class CMUtils {
 			case IRON_DOOR_BLOCK:
 			case TRIPWIRE_HOOK:
 			case COCOA:
-				
 				int extra = data & ~0x3;
 	            int withoutFlags = data & 0x3;
 	            
@@ -489,6 +491,8 @@ public class CMUtils {
 				break;
 			case DIODE_BLOCK_ON:
 			case DIODE_BLOCK_OFF:
+			case REDSTONE_COMPARATOR_ON:
+			case REDSTONE_COMPARATOR_OFF:
 				int dir = data & 0x03;
 				int delay = data - dir;
 				switch (dir) {
@@ -592,6 +596,20 @@ public class CMUtils {
 				else if (data < 16)
 					data -= 1;
 				
+				break;
+			case HAY_BLOCK:
+				if(data == 4)
+					data = 8;
+				else if(data == 8)
+					data = 4;
+				else
+					data = 0;
+				break;
+			case QUARTZ_BLOCK:
+				if(data == 3)
+					data = 4;
+				else if(data == 4)
+					data = 3;
 				break;
 			default:
 				break;
@@ -749,6 +767,9 @@ public class CMUtils {
 		case BURNING_FURNACE:
 		case ENDER_CHEST:
 		case DISPENSER:
+		case DROPPER:
+		case TRAPPED_CHEST:
+		case HOPPER:
 			switch (data) {
 			case 2:
 				if (mirror == Direction.NORTH)
@@ -976,6 +997,8 @@ public class CMUtils {
 			break;
 		case DIODE_BLOCK_ON:
 		case DIODE_BLOCK_OFF:
+		case REDSTONE_COMPARATOR_ON:
+		case REDSTONE_COMPARATOR_OFF:
 			int dir = data & 0x03;
 			int delay = data - dir;
 			switch (dir) {

@@ -13,7 +13,7 @@ public class NPC implements INPC
 	@Override
 	public void setYaw(HumanEntity entity, Location loc) 
 	{
-		((CraftHumanEntity) entity).getHandle().aA = loc.getYaw();
+		((CraftHumanEntity) entity).getHandle().aB = loc.getYaw();
 	}
 
 	@Override

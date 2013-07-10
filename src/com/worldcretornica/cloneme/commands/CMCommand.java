@@ -329,7 +329,7 @@ public class CMCommand implements CommandExecutor {
 				{
 					CloneMe.ncpExempt((Player) s, CheckType.ALL);
 					CloneMe.ncpExempt((Player) s, CheckType.BLOCKPLACE);
-					CloneMe.ncpExempt((Player) s, CheckType.BLOCKPLACE_AGAINST);
+					//CloneMe.ncpExempt((Player) s, CheckType.BLOCKPLACE_AGAINST);
 					CloneMe.ncpExempt((Player) s, CheckType.BLOCKPLACE_FASTPLACE);
 					CloneMe.ncpExempt((Player) s, CheckType.BLOCKBREAK_WRONGBLOCK);
 				}

@@ -80,7 +80,7 @@ public class Clone {
 
 		this.name = name;
 		this.clonedplayer = cp;
-		
+
 		npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, this.name);
 		
 		npc.spawn(getNewLocation(this.currentLocation.clone()));

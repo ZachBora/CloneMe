@@ -1,6 +1,6 @@
 name: CloneMe
 main: com.worldcretornica.cloneme.CloneMe
-version: '0.12'
+version: '0.13'
 author: ZachBora
 website: http://dev.bukkit.org/server-mods/cloneme/
 depend: [Citizens]
